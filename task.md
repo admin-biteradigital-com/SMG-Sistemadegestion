@@ -1,0 +1,23 @@
+# SMG System Implementation
+
+- [x] Create Database Schema <!-- id: 0 -->
+- [x] Setup Backend Foundation <!-- id: 1 -->
+    - [x] Configure Database Connection (`db.js`) <!-- id: 2 -->
+    - [x] Create API Routes Structure <!-- id: 3 -->
+- [x] Implement Phase 1: Master Data <!-- id: 4 -->
+    - [x] Implement Unidades Medida <!-- id: 7 -->
+    - [x] Implement Productos <!-- id: 8 -->
+    - [x] Implement Proveedores <!-- id: 9 -->
+    - [x] Implement Clientes <!-- id: 10 -->
+    - [x] Implement Empleados <!-- id: 11 -->
+    - [x] Implement Vehiculos <!-- id: 12 -->
+    - [x] Implement Rutas <!-- id: 13 -->
+- [ ] **DECISION PENDING**: Select Database Strategy (Cloud Postgres vs Local SQLite) <!-- id: 20 -->
+- [ ] Implement Phase 1: Purchase Cycle <!-- id: 5 -->
+    - [x] Implement Ordenes Compra <!-- id: 14 -->
+    - [x] Implement Recepciones Mercaderia <!-- id: 15 -->
+    - [x] Implement Stock Updates (Trigger/Logic) <!-- id: 16 -->
+- [x] Implement Phase 1: Sales Cycle <!-- id: 6 -->
+    - [x] Implement Ordenes Carga (Stock Decrement) <!-- id: 17 -->
+    - [x] Implement Ordenes Transporte <!-- id: 18 -->
+    - [x] Implement Ordenes Venta & Pagos <!-- id: 19 -->
