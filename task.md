@@ -12,7 +12,8 @@
     - [x] Implement Empleados <!-- id: 11 -->
     - [x] Implement Vehiculos <!-- id: 12 -->
     - [x] Implement Rutas <!-- id: 13 -->
-- [ ] **DECISION PENDING**: Select Database Strategy (Cloud Postgres vs Local SQLite) <!-- id: 20 -->
+- [x] **DECISION PENDING**: Select Database Strategy (Cloud Postgres selected on this branch) <!-- id: 20 -->
+    - [x] Configure Neon.tech Connection <!-- id: 21 -->
 - [ ] Implement Phase 1: Purchase Cycle <!-- id: 5 -->
     - [x] Implement Ordenes Compra <!-- id: 14 -->
     - [x] Implement Recepciones Mercaderia <!-- id: 15 -->

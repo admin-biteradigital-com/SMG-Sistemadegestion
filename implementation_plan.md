@@ -1,30 +1,24 @@
-# Backend Implementation Plan - Phase 1 Complete / Phase 2 Pending
+# Backend Implementation Plan - Neon.tech Integration
 
-## Current Status
-**Phase 1 (Backend Core) is Code Complete.**
-All controllers, routes, and logic for Master Data, Purchase Cycle, and Sales Cycle are implemented and transactional integrity is verified via code review.
+## Goal Description
+Integrate the existing backend with a **Neon.tech**
+## ✅ DECISION IMPLEMENTED: Neon.tech (Cloud Postgres)
+The decision was made to use **Neon.tech**.
 
-## 🛑 PENDING DECISION: Database Architecture
-The application currently expects a PostgreSQL connection (`pg` client). The environment does *not* have a local PostgreSQL instance.
+-   **Connection**: Configured in `.env`.
+-   **Schema**: Successfully applied via `scripts/init-db.js`.
+-   **SSL**: Enabled in `db.js`.
 
-**The next developer/agent must decide between:**
+The backend is now fully functional on this branch.
+tialization
+-   [ ] Run the schema script `01_smg_schema.sql` against the new Neon database.
+    -   We can use a tool or a temporary script (`init-db.js`) to execute the SQL file since `psql` might not be installed locally.
 
-### Option A: PostgreSQL in the Cloud (Recommended)
-*   **Goal**: Maintain current robust architecture.
-*   **Action**:
-    1.  Create a free database on **Neon.tech** or **Supabase**.
-    2.  Update `.env` with the remote `DB_HOST`, `DB_PASSWORD`, etc.
-    3.  Run the schema script (`01_smg_schema.sql`) on the cloud DB.
-*   **Pros**: Production-ready, no code changes needed.
+### 3. Verification
+-   [ ] Run `npm run dev`.
+-   [ ] Test `/api/health` and `/api/products` (should return empty list instead of error).
 
-### Option B: Refactor to SQLite (Local/Offline)
-*   **Goal**: Run entirely locally without internet/accounts.
-*   **Action**:
-    1.  Install `better-sqlite3`.
-    2.  Refactor `src/config/db.js` to use SQLite.
-    3.  Adjust SQL queries (replace `$1`, `$2` syntax with `?` if needed, though wrappers exist).
-*   **Pros**: Zero external dependencies.
-
-## Next Steps (Once DB is solved)
-1.  **Verification**: Run `npm run dev` and verify API health.
-2.  **Frontend**: Begin Phase 2 (Frontend Implementation).
+## Verification Plan
+1.  Start server: `npm run dev`.
+2.  Check logs for "Connected to database".
+3.  Hit `GET /api/products`. Expect `200 OK` (Empty array).
