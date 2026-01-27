@@ -22,3 +22,8 @@
     - [x] Implement Ordenes Carga (Stock Decrement) <!-- id: 17 -->
     - [x] Implement Ordenes Transporte <!-- id: 18 -->
     - [x] Implement Ordenes Venta & Pagos <!-- id: 19 -->
+- [ ] Implement Phase 2: Frontend Foundation <!-- id: 22 -->
+    - [x] Initialize Vite + React Project <!-- id: 23 -->
+    - [x] Setup Tailwind CSS & Design System <!-- id: 24 -->
+    - [x] Create API Client Service <!-- id: 25 -->
+    - [x] Implement Master Data Views <!-- id: 26 -->
