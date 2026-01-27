@@ -1,0 +1,31 @@
+const express = require('express');
+const router = express.Router();
+const productRoutes = require('./productRoutes');
+const unitRoutes = require('./unitRoutes');
+const supplierRoutes = require('./supplierRoutes');
+const clientRoutes = require('./clientRoutes');
+const employeeRoutes = require('./employeeRoutes');
+const vehicleRoutes = require('./vehicleRoutes');
+const routeRoutes = require('./routeRoutes');
+const purchaseOrderRoutes = require('./purchaseOrderRoutes');
+const receptionRoutes = require('./receptionRoutes');
+const stockRoutes = require('./stockRoutes');
+const loadRoutes = require('./loadRoutes');
+const transportRoutes = require('./transportRoutes');
+const saleRoutes = require('./saleRoutes');
+
+router.use('/products', productRoutes);
+router.use('/units', unitRoutes);
+router.use('/suppliers', supplierRoutes);
+router.use('/clients', clientRoutes);
+router.use('/employees', employeeRoutes);
+router.use('/vehicles', vehicleRoutes);
+router.use('/routes', routeRoutes);
+router.use('/purchase-orders', purchaseOrderRoutes);
+router.use('/receptions', receptionRoutes);
+router.use('/stock', stockRoutes);
+router.use('/load-orders', loadRoutes);
+router.use('/transport-orders', transportRoutes);
+router.use('/sales', saleRoutes);
+
+module.exports = router;
