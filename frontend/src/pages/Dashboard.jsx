@@ -1,75 +1,95 @@
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { DollarSign, Package, AlertCircle } from "lucide-react"
+
 export default function Dashboard() {
+    const stats = [
+        {
+            title: "Ventas de Hoy",
+            value: "$0.00",
+            description: "Total de ventas registradas",
+            icon: DollarSign,
+            trend: "+0%",
+            color: "text-teal-600"
+        },
+        {
+            title: "Pedidos Pendientes",
+            value: "0",
+            description: "Ordenes en proceso",
+            icon: Package,
+            trend: "0 nuevos",
+            color: "text-orange-600"
+        },
+        {
+            title: "Alertas de Stock",
+            value: "0",
+            description: "Productos bajo mínimo",
+            icon: AlertCircle,
+            trend: "Todo OK",
+            color: "text-amber-600"
+        }
+    ]
+
     return (
-        <div className="space-y-6">
+        <div className="space-y-8">
+            {/* Header */}
             <div>
-                <h2 className="text-2xl font-bold text-gray-900">Panel de Control</h2>
-                <p className="mt-1 text-sm text-gray-500">Resumen general del sistema</p>
+                <h2 className="text-3xl font-bold tracking-tight">Panel de Control</h2>
+                <p className="text-muted-foreground">
+                    Resumen general del sistema SMG
+                </p>
             </div>
 
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                {/* Card 1 */}
-                <div className="bg-white overflow-hidden shadow rounded-lg">
-                    <div className="p-5">
-                        <div className="flex items-center">
-                            <div className="flex-shrink-0">
-                                <div className="h-12 w-12 rounded-md bg-teal-500 flex items-center justify-center">
-                                    <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                </div>
-                            </div>
-                            <div className="ml-5 w-0 flex-1">
-                                <dl>
-                                    <dt className="text-sm font-medium text-gray-500 truncate">Ventas de Hoy</dt>
-                                    <dd className="text-2xl font-semibold text-gray-900">$0.00</dd>
-                                </dl>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Card 2 */}
-                <div className="bg-white overflow-hidden shadow rounded-lg">
-                    <div className="p-5">
-                        <div className="flex items-center">
-                            <div className="flex-shrink-0">
-                                <div className="h-12 w-12 rounded-md bg-orange-500 flex items-center justify-center">
-                                    <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                                    </svg>
-                                </div>
-                            </div>
-                            <div className="ml-5 w-0 flex-1">
-                                <dl>
-                                    <dt className="text-sm font-medium text-gray-500 truncate">Pedidos Pendientes</dt>
-                                    <dd className="text-2xl font-semibold text-gray-900">0</dd>
-                                </dl>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Card 3 */}
-                <div className="bg-white overflow-hidden shadow rounded-lg">
-                    <div className="p-5">
-                        <div className="flex items-center">
-                            <div className="flex-shrink-0">
-                                <div className="h-12 w-12 rounded-md bg-amber-600 flex items-center justify-center">
-                                    <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                                    </svg>
-                                </div>
-                            </div>
-                            <div className="ml-5 w-0 flex-1">
-                                <dl>
-                                    <dt className="text-sm font-medium text-gray-500 truncate">Alertas de Stock</dt>
-                                    <dd className="text-2xl font-semibold text-gray-900">0</dd>
-                                </dl>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            {/* Stats Grid */}
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {stats.map((stat, index) => {
+                    const Icon = stat.icon
+                    return (
+                        <Card key={index} className="hover:shadow-lg transition-shadow">
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                <CardTitle className="text-sm font-medium">
+                                    {stat.title}
+                                </CardTitle>
+                                <Icon className={`h-4 w-4 ${stat.color}`} />
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold">{stat.value}</div>
+                                <p className="text-xs text-muted-foreground mt-1">
+                                    {stat.description}
+                                </p>
+                                <p className={`text-xs mt-2 ${stat.color}`}>
+                                    {stat.trend}
+                                </p>
+                            </CardContent>
+                        </Card>
+                    )
+                })}
             </div>
+
+            {/* Quick Access */}
+            <Card>
+                <CardHeader>
+                    <CardTitle>Acceso Rápido</CardTitle>
+                    <CardDescription>
+                        Accede a las funciones más utilizadas
+                    </CardDescription>
+                </CardHeader>
+                <CardContent className="grid gap-4 md:grid-cols-2">
+                    <button className="flex items-center gap-3 p-4 rounded-lg border hover:bg-accent hover:text-accent-foreground transition-colors">
+                        <Package className="h-5 w-5 text-teal-600" />
+                        <div className="text-left">
+                            <div className="font-medium">Gestionar Productos</div>
+                            <div className="text-sm text-muted-foreground">Ver y editar catálogo</div>
+                        </div>
+                    </button>
+                    <button className="flex items-center gap-3 p-4 rounded-lg border hover:bg-accent hover:text-accent-foreground transition-colors">
+                        <DollarSign className="h-5 w-5 text-orange-600" />
+                        <div className="text-left">
+                            <div className="font-medium">Nueva Venta</div>
+                            <div className="text-sm text-muted-foreground">Registrar orden</div>
+                        </div>
+                    </button>
+                </CardContent>
+            </Card>
         </div>
-    );
+    )
 }
