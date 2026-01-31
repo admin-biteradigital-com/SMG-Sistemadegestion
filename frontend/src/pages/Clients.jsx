@@ -11,10 +11,11 @@ export default function Clients() {
     const [showForm, setShowForm] = useState(false);
     const [editingClient, setEditingClient] = useState(null);
     const [formData, setFormData] = useState({
-        nombre_cliente: '',
-        direccion_cliente: '',
-        telefono_cliente: '',
-        email_cliente: ''
+        razon_social: '',
+        rut_cliente: '',
+        ciclo_reabastecimiento_dias: 7,
+        limite_credito_autorizado: 0,
+        segmento_cliente: ''
     });
 
     useEffect(() => {
@@ -35,10 +36,24 @@ export default function Clients() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            if (editingClient) {
-                await api.put(`/clients/${editingClient.id_cliente}`, formData);
+            // Generate ID if creating new client
+            let clientData = { ...formData };
+            if (!editingClient) {
+                const maxId = clients.length > 0 ? Math.max(...clients.map(c => c.id_cliente)) : 0;
+                clientData.ID_Cliente = maxId + 1;
+                clientData.Razon_Social = formData.razon_social;
+                clientData.RUT_Cliente = formData.rut_cliente;
+                clientData.Ciclo_Reabastecimiento_Dias = parseInt(formData.ciclo_reabastecimiento_dias);
+                clientData.Limite_Credito_Autorizado = parseFloat(formData.limite_credito_autorizado);
+                clientData.Segmento_Cliente = formData.segmento_cliente;
+                await api.post('/clients', clientData);
             } else {
-                await api.post('/clients', formData);
+                clientData.Razon_Social = formData.razon_social;
+                clientData.RUT_Cliente = formData.rut_cliente;
+                clientData.Ciclo_Reabastecimiento_Dias = parseInt(formData.ciclo_reabastecimiento_dias);
+                clientData.Limite_Credito_Autorizado = parseFloat(formData.limite_credito_autorizado);
+                clientData.Segmento_Cliente = formData.segmento_cliente;
+                await api.put(`/clients/${editingClient.id_cliente}`, clientData);
             }
             fetchClients();
             resetForm();
@@ -51,10 +66,11 @@ export default function Clients() {
     const handleEdit = (client) => {
         setEditingClient(client);
         setFormData({
-            nombre_cliente: client.nombre_cliente,
-            direccion_cliente: client.direccion_cliente || '',
-            telefono_cliente: client.telefono_cliente || '',
-            email_cliente: client.email_cliente || ''
+            razon_social: client.razon_social,
+            rut_cliente: client.rut_cliente,
+            ciclo_reabastecimiento_dias: client.ciclo_reabastecimiento_dias || 7,
+            limite_credito_autorizado: client.limite_credito_autorizado || 0,
+            segmento_cliente: client.segmento_cliente || ''
         });
         setShowForm(true);
     };
@@ -72,10 +88,11 @@ export default function Clients() {
 
     const resetForm = () => {
         setFormData({
-            nombre_cliente: '',
-            direccion_cliente: '',
-            telefono_cliente: '',
-            email_cliente: ''
+            razon_social: '',
+            rut_cliente: '',
+            ciclo_reabastecimiento_dias: 7,
+            limite_credito_autorizado: 0,
+            segmento_cliente: ''
         });
         setEditingClient(null);
         setShowForm(false);
@@ -107,41 +124,58 @@ export default function Clients() {
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Nombre *</label>
+                                    <label className="text-sm font-medium">Razón Social *</label>
                                     <input
                                         type="text"
                                         required
-                                        value={formData.nombre_cliente}
-                                        onChange={(e) => setFormData({ ...formData, nombre_cliente: e.target.value })}
+                                        value={formData.razon_social}
+                                        onChange={(e) => setFormData({ ...formData, razon_social: e.target.value })}
                                         className="w-full px-3 py-2 border rounded-md"
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Teléfono</label>
-                                    <input
-                                        type="tel"
-                                        value={formData.telefono_cliente}
-                                        onChange={(e) => setFormData({ ...formData, telefono_cliente: e.target.value })}
-                                        className="w-full px-3 py-2 border rounded-md"
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium">Email</label>
-                                    <input
-                                        type="email"
-                                        value={formData.email_cliente}
-                                        onChange={(e) => setFormData({ ...formData, email_cliente: e.target.value })}
-                                        className="w-full px-3 py-2 border rounded-md"
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium">Dirección</label>
+                                    <label className="text-sm font-medium">RUT *</label>
                                     <input
                                         type="text"
-                                        value={formData.direccion_cliente}
-                                        onChange={(e) => setFormData({ ...formData, direccion_cliente: e.target.value })}
+                                        required
+                                        value={formData.rut_cliente}
+                                        onChange={(e) => setFormData({ ...formData, rut_cliente: e.target.value })}
                                         className="w-full px-3 py-2 border rounded-md"
                                     />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium">Ciclo Reabastecimiento (días)</label>
+                                    <input
+                                        type="number"
+                                        min="1"
+                                        value={formData.ciclo_reabastecimiento_dias}
+                                        onChange={(e) => setFormData({ ...formData, ciclo_reabastecimiento_dias: e.target.value })}
+                                        className="w-full px-3 py-2 border rounded-md"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium">Límite de Crédito</label>
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        step="0.01"
+                                        value={formData.limite_credito_autorizado}
+                                        onChange={(e) => setFormData({ ...formData, limite_credito_autorizado: e.target.value })}
+                                        className="w-full px-3 py-2 border rounded-md"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium">Segmento</label>
+                                    <select
+                                        value={formData.segmento_cliente}
+                                        onChange={(e) => setFormData({ ...formData, segmento_cliente: e.target.value })}
+                                        className="w-full px-3 py-2 border rounded-md"
+                                    >
+                                        <option value="">Seleccione...</option>
+                                        <option value="Premium">Premium</option>
+                                        <option value="Estándar">Estándar</option>
+                                        <option value="Básico">Básico</option>
+                                    </select>
                                 </div>
                             </div>
                             <div className="flex gap-2">
@@ -181,20 +215,22 @@ export default function Clients() {
                         <Table>
                             <TableHeader>
                                 <TableRow>
-                                    <TableHead>Nombre</TableHead>
-                                    <TableHead>Teléfono</TableHead>
-                                    <TableHead>Email</TableHead>
-                                    <TableHead>Dirección</TableHead>
+                                    <TableHead>Razón Social</TableHead>
+                                    <TableHead>RUT</TableHead>
+                                    <TableHead>Ciclo (días)</TableHead>
+                                    <TableHead>Límite Crédito</TableHead>
+                                    <TableHead>Segmento</TableHead>
                                     <TableHead className="text-right">Acciones</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {clients.map((client) => (
                                     <TableRow key={client.id_cliente}>
-                                        <TableCell className="font-medium">{client.nombre_cliente}</TableCell>
-                                        <TableCell>{client.telefono_cliente || '-'}</TableCell>
-                                        <TableCell>{client.email_cliente || '-'}</TableCell>
-                                        <TableCell>{client.direccion_cliente || '-'}</TableCell>
+                                        <TableCell className="font-medium">{client.razon_social}</TableCell>
+                                        <TableCell>{client.rut_cliente}</TableCell>
+                                        <TableCell>{client.ciclo_reabastecimiento_dias || '-'}</TableCell>
+                                        <TableCell>${parseFloat(client.limite_credito_autorizado || 0).toLocaleString('es-CL')}</TableCell>
+                                        <TableCell>{client.segmento_cliente || '-'}</TableCell>
                                         <TableCell className="text-right space-x-2">
                                             <Button
                                                 variant="ghost"

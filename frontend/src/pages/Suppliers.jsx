@@ -54,7 +54,7 @@ const Suppliers = () => {
         e.preventDefault();
         try {
             if (isEditing) {
-                await api.put(`/suppliers/${currentSupplier.ID_Proveedor}`, formData);
+                await api.put(`/suppliers/${currentSupplier.id_proveedor}`, formData);
             } else {
                 await api.post('/suppliers', formData);
             }
@@ -69,12 +69,12 @@ const Suppliers = () => {
     const handleEdit = (supplier) => {
         setCurrentSupplier(supplier);
         setFormData({
-            Nombre_Proveedor: supplier.Nombre_Proveedor,
-            Contacto_Proveedor: supplier.Contacto_Proveedor || '',
-            Telefono_Proveedor: supplier.Telefono_Proveedor || '',
-            Email_Proveedor: supplier.Email_Proveedor || '',
-            Direccion_Proveedor: supplier.Direccion_Proveedor || '',
-            RUT_Proveedor: supplier.RUT_Proveedor
+            Nombre_Proveedor: supplier.nombre_proveedor,
+            Contacto_Proveedor: supplier.contacto_proveedor || '',
+            Telefono_Proveedor: supplier.telefono_proveedor || '',
+            Email_Proveedor: supplier.email_proveedor || '',
+            Direccion_Proveedor: supplier.direccion_proveedor || '',
+            RUT_Proveedor: supplier.rut_proveedor
         });
         setIsEditing(true);
         setShowForm(true);
@@ -107,8 +107,8 @@ const Suppliers = () => {
     };
 
     const filteredSuppliers = suppliers.filter(supplier =>
-        supplier.Nombre_Proveedor.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        supplier.RUT_Proveedor.toLowerCase().includes(searchTerm.toLowerCase())
+        (supplier.nombre_proveedor && supplier.nombre_proveedor.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (supplier.rut_proveedor && supplier.rut_proveedor.toLowerCase().includes(searchTerm.toLowerCase()))
     );
 
     return (
@@ -254,17 +254,17 @@ const Suppliers = () => {
                                 </TableRow>
                             ) : (
                                 filteredSuppliers.map((supplier) => (
-                                    <TableRow key={supplier.ID_Proveedor}>
-                                        <TableCell className="font-medium">{supplier.RUT_Proveedor}</TableCell>
-                                        <TableCell>{supplier.Nombre_Proveedor}</TableCell>
+                                    <TableRow key={supplier.id_proveedor}>
+                                        <TableCell className="font-medium">{supplier.rut_proveedor}</TableCell>
+                                        <TableCell>{supplier.nombre_proveedor}</TableCell>
                                         <TableCell>
                                             <div className="flex flex-col">
-                                                <span>{supplier.Contacto_Proveedor}</span>
-                                                <span className="text-xs text-muted-foreground">{supplier.Email_Proveedor}</span>
+                                                <span>{supplier.contacto_proveedor}</span>
+                                                <span className="text-xs text-muted-foreground">{supplier.email_proveedor}</span>
                                             </div>
                                         </TableCell>
-                                        <TableCell>{supplier.Telefono_Proveedor}</TableCell>
-                                        <TableCell>{supplier.Direccion_Proveedor}</TableCell>
+                                        <TableCell>{supplier.telefono_proveedor}</TableCell>
+                                        <TableCell>{supplier.direccion_proveedor}</TableCell>
                                         <TableCell className="text-right">
                                             <div className="flex justify-end gap-2">
                                                 <Button
@@ -279,7 +279,7 @@ const Suppliers = () => {
                                                     variant="ghost"
                                                     size="icon"
                                                     className="h-8 w-8 text-red-600"
-                                                    onClick={() => handleDelete(supplier.ID_Proveedor)}
+                                                    onClick={() => handleDelete(supplier.id_proveedor)}
                                                 >
                                                     <Trash2 className="h-4 w-4" />
                                                 </Button>
