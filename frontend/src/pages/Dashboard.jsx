@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { DollarSign, Package, AlertCircle } from "lucide-react"
 
@@ -74,20 +75,20 @@ export default function Dashboard() {
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="grid gap-4 md:grid-cols-2">
-                    <button className="flex items-center gap-3 p-4 rounded-lg border hover:bg-accent hover:text-accent-foreground transition-colors">
+                    <Link to="/products" className="flex items-center gap-3 p-4 rounded-lg border hover:bg-accent hover:text-accent-foreground transition-colors">
                         <Package className="h-5 w-5 text-teal-600" />
                         <div className="text-left">
                             <div className="font-medium">Gestionar Productos</div>
                             <div className="text-sm text-muted-foreground">Ver y editar catálogo</div>
                         </div>
-                    </button>
-                    <button className="flex items-center gap-3 p-4 rounded-lg border hover:bg-accent hover:text-accent-foreground transition-colors">
+                    </Link>
+                    <Link to="/sales" className="flex items-center gap-3 p-4 rounded-lg border hover:bg-accent hover:text-accent-foreground transition-colors">
                         <DollarSign className="h-5 w-5 text-orange-600" />
                         <div className="text-left">
                             <div className="font-medium">Nueva Venta</div>
                             <div className="text-sm text-muted-foreground">Registrar orden</div>
                         </div>
-                    </button>
+                    </Link>
                 </CardContent>
             </Card>
         </div>

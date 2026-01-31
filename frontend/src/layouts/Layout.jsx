@@ -19,7 +19,7 @@ export default function Layout() {
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
     return (
-        <div className="flex h-screen bg-background">
+        <div className="flex h-screen bg-background overflow-hidden">
             {/* Mobile Sidebar Overlay */}
             {sidebarOpen && (
                 <div
@@ -30,13 +30,13 @@ export default function Layout() {
 
             {/* Sidebar */}
             <aside className={`
-        fixed inset-y-0 left-0 z-50 w-64 bg-card border-r
+        fixed inset-y-0 left-0 z-50 w-64 bg-card border-r flex flex-col
         transform transition-transform duration-300 ease-in-out 
-        lg:translate-x-0 lg:static
+        lg:translate-x-0 lg:static lg:z-auto
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
                 {/* Logo Header */}
-                <div className="flex items-center justify-between px-6 h-16 border-b">
+                <div className="flex items-center justify-between px-6 h-16 border-b flex-shrink-0">
                     <div className="flex items-center gap-3">
                         <img
                             src="/logo.jpg"
@@ -58,7 +58,7 @@ export default function Layout() {
                 </div>
 
                 {/* Navigation */}
-                <nav className="flex-1 px-3 py-6 space-y-1">
+                <nav className="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
                     {navigation.map((item) => {
                         const isActive = location.pathname === item.href;
                         const Icon = item.icon;
@@ -85,7 +85,7 @@ export default function Layout() {
                 </nav>
 
                 {/* User Section */}
-                <div className="p-4 border-t">
+                <div className="p-4 border-t flex-shrink-0">
                     <div className="flex items-center gap-3 px-3 py-2">
                         <div className="h-8 w-8 rounded-full bg-teal-600 flex items-center justify-center text-white text-sm font-semibold">
                             <User className="h-4 w-4" />
@@ -102,7 +102,7 @@ export default function Layout() {
             <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
 
                 {/* Mobile Header */}
-                <header className="lg:hidden h-16 bg-card border-b flex items-center justify-between px-4">
+                <header className="lg:hidden h-16 bg-card border-b flex items-center justify-between px-4 flex-shrink-0">
                     <Button
                         variant="ghost"
                         size="icon"
@@ -115,7 +115,7 @@ export default function Layout() {
                 </header>
 
                 {/* Desktop Header */}
-                <header className="hidden lg:flex h-16 bg-card border-b items-center px-8">
+                <header className="hidden lg:flex h-16 bg-card border-b items-center px-8 flex-shrink-0">
                     <h1 className="text-xl font-semibold">
                         {navigation.find((n) => n.href === location.pathname)?.name || 'SMG'}
                     </h1>
