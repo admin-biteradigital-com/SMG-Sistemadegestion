@@ -5,6 +5,8 @@ import Products from './pages/Products';
 import Clients from './pages/Clients';
 import Sales from './pages/Sales';
 import LoadOrders from './pages/LoadOrders';
+import Suppliers from './pages/Suppliers';
+import PurchaseOrders from './pages/PurchaseOrders';
 
 function App() {
   return (
@@ -16,8 +18,8 @@ function App() {
           <Route path="clients" element={<Clients />} />
           <Route path="sales" element={<Sales />} />
           <Route path="load-orders" element={<LoadOrders />} />
-          {/* Placeholders for future routes */}
-          <Route path="suppliers" element={<div className="p-4 text-center text-muted-foreground">Módulo de Proveedores (Próximamente)</div>} />
+          <Route path="suppliers" element={<Suppliers />} />
+          <Route path="purchase-orders" element={<PurchaseOrders />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -3,7 +3,7 @@ import { Outlet, Link, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button"
 import {
     Home, Package, Users, Truck, ShoppingCart, PackageOpen,
-    Menu, X, User, LogOut
+    Menu, X, User, LogOut, FileText
 } from 'lucide-react';
 
 const navigation = [
@@ -13,6 +13,7 @@ const navigation = [
     { name: 'Productos', href: '/products', icon: Package, color: 'hover:bg-amber-700' },
     { name: 'Clientes', href: '/clients', icon: Users, color: 'hover:bg-teal-700' },
     { name: 'Proveedores', href: '/suppliers', icon: Truck, color: 'hover:bg-orange-700' },
+    { name: 'Órdenes de Compra', href: '/purchase-orders', icon: FileText, color: 'hover:bg-amber-700' },
 ];
 
 export default function Layout() {

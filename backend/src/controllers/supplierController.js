@@ -3,7 +3,7 @@ const db = require('../config/db');
 // Get all suppliers
 const getAllSuppliers = async (req, res) => {
     try {
-        const result = await db.query('SELECT * FROM PROVEEDORES');
+        const result = await db.query('SELECT * FROM PROVEEDORES ORDER BY ID_Proveedor ASC');
         res.json(result.rows);
     } catch (err) {
         console.error(err);
@@ -39,13 +39,23 @@ const createSupplier = async (req, res) => {
     } = req.body;
 
     try {
+        // Auto-generate ID if not provided
+        let nextId = ID_Proveedor;
+        if (!nextId) {
+            const maxIdResult = await db.query('SELECT MAX(ID_Proveedor) as max_id FROM PROVEEDORES');
+            nextId = (maxIdResult.rows[0].max_id || 0) + 1;
+        }
+
         const result = await db.query(
             'INSERT INTO PROVEEDORES (ID_Proveedor, Nombre_Proveedor, Contacto_Proveedor, Telefono_Proveedor, Email_Proveedor, Direccion_Proveedor, RUT_Proveedor) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
-            [ID_Proveedor, Nombre_Proveedor, Contacto_Proveedor, Telefono_Proveedor, Email_Proveedor, Direccion_Proveedor, RUT_Proveedor]
+            [nextId, Nombre_Proveedor, Contacto_Proveedor, Telefono_Proveedor, Email_Proveedor, Direccion_Proveedor, RUT_Proveedor]
         );
         res.status(201).json(result.rows[0]);
     } catch (err) {
         console.error(err);
+        if (err.code === '23505') { // Unique constraint violation
+            return res.status(400).json({ error: 'El RUT ya está registrado' });
+        }
         res.status(500).json({ error: 'Server error', details: err.message });
     }
 };
@@ -73,6 +83,9 @@ const updateSupplier = async (req, res) => {
         res.json(result.rows[0]);
     } catch (err) {
         console.error(err);
+        if (err.code === '23505') { // Unique constraint violation
+            return res.status(400).json({ error: 'El RUT ya está registrado' });
+        }
         res.status(500).json({ error: 'Server error' });
     }
 };
@@ -88,6 +101,9 @@ const deleteSupplier = async (req, res) => {
         res.json({ message: 'Supplier deleted successfully' });
     } catch (err) {
         console.error(err);
+        if (err.code === '23503') { // Foreign key violation
+            return res.status(400).json({ error: 'No se puede eliminar el proveedor porque tiene órdenes de compra asociadas' });
+        }
         res.status(500).json({ error: 'Server error' });
     }
 };
