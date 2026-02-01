@@ -4,6 +4,7 @@ import Dashboard from './pages/Dashboard';
 import Products from './pages/Products';
 import Clients from './pages/Clients';
 import Sales from './pages/Sales';
+import NewSale from './pages/NewSale';
 import LoadOrders from './pages/LoadOrders';
 import Suppliers from './pages/Suppliers';
 import PurchaseOrders from './pages/PurchaseOrders';
@@ -16,6 +17,7 @@ function App() {
           <Route index element={<Dashboard />} />
           <Route path="products" element={<Products />} />
           <Route path="clients" element={<Clients />} />
+          <Route path="sales/new" element={<NewSale />} />
           <Route path="sales" element={<Sales />} />
           <Route path="load-orders" element={<LoadOrders />} />
           <Route path="suppliers" element={<Suppliers />} />

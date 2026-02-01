@@ -119,7 +119,7 @@ export default function LoadOrders() {
                                         <option value="">Seleccionar vehículo</option>
                                         {vehicles.map(v => (
                                             <option key={v.id_vehiculo} value={v.id_vehiculo}>
-                                                {v.patente_vehiculo} - {v.nombre_vehiculo}
+                                                {v.patente} - {v.marca} {v.modelo} ({v.tipo_vehiculo})
                                             </option>
                                         ))}
                                     </select>

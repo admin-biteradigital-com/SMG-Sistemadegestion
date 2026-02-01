@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Plus, ShoppingCart, Package, Truck, TrendingUp, AlertCircle } from "lucide-react"
 import api from '@/api/axios';
 
 export default function Sales() {
+    const navigate = useNavigate();
     const [todayStats, setTodayStats] = useState({
         sales: 0,
         amount: 0,
@@ -162,7 +163,7 @@ export default function Sales() {
                             <CardTitle>Ventas Recientes</CardTitle>
                             <CardDescription>Últimas transacciones registradas</CardDescription>
                         </div>
-                        <Button size="sm" variant="outline">Ver Todas</Button>
+                        <Button size="sm" variant="outline" onClick={() => navigate('/sales/all')}>Ver Todas</Button>
                     </div>
                 </CardHeader>
                 <CardContent>
@@ -170,7 +171,7 @@ export default function Sales() {
                         <div className="text-center py-8 text-muted-foreground">
                             <ShoppingCart className="h-12 w-12 mx-auto mb-4 opacity-50" />
                             <p>No hay ventas registradas aún</p>
-                            <Button className="mt-4 bg-teal-600 hover:bg-teal-700">
+                            <Button className="mt-4 bg-teal-600 hover:bg-teal-700" onClick={() => navigate('/sales/new')}>
                                 <Plus className="mr-2 h-4 w-4" />
                                 Registrar Primera Venta
                             </Button>
