@@ -292,6 +292,48 @@ Cada endpoint debe documentar:
 | `stock_actual` | integer | SÍ | Stock disponible actual |
 | `stock_minimo` | integer | SÍ | Stock mínimo para alerta |
 
+
+---
+
+#### **GET /api/vehicles**
+
+**Descripción**: Obtiene todos los vehículos registrados en la flota.
+
+**Request**: Ninguno
+
+**Response**: `200 OK`
+```json
+[
+  {
+    "id_vehiculo": 1,
+    "patente": "SVLF-48",
+    "marca": "Chevrolet",
+    "modelo": "N400 MAX",
+    "ano": 2023,
+    "tipo_vehiculo": "Furgón",
+    "capacidad_carga_kg": "1000.00",
+    "estado_vehiculo": "Activo"
+  }
+]
+```
+
+**Campos**:
+| Campo | Tipo | Nullable | Descripción |
+|-------|------|----------|-------------|
+| `id_vehiculo` | integer | NO | ID único del vehículo |
+| `patente` | string | NO | Patente del vehículo (Placa) |
+| `marca` | string | NO | Marca del fabricante |
+| `modelo` | string | NO | Modelo del vehículo |
+| `ano` | integer | SÍ | Año de fabricación |
+| `tipo_vehiculo` | string | SÍ | Tipo de vehículo (e.g., Furgón, Camión) |
+| `capacidad_carga_kg` | decimal | SÍ | Capacidad de carga máxima en Kg |
+| `estado_vehiculo` | string | SÍ | Estado operativo (Activo/Inactivo) |
+
+**Notas**:
+- Este endpoint es crítico para el módulo de Órdenes de Carga (`/load-orders`).
+- ⚠️ NO existe `patente_vehiculo` o `nombre_vehiculo`.
+- Usar combinación `marca` + `modelo` para mostrar nombre descriptivo.
+
 ---
 
 #### **GET /api/purchase-orders**

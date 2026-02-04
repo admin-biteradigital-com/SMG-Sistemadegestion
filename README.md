@@ -52,10 +52,25 @@ Para garantizar un sistema robusto, escalable y mantenible, utilizaremos las sig
 
 ## 📚 Documentación
 
-Toda la documentación técnica y de negocio del proyecto está versionada y disponible en este repositorio.
+La documentación del proyecto ha sido reorganizada para facilitar su acceso y mantenimiento.
 
-*   [Changelog.md](./Changelog.md): Historial de versiones del diseño de la base de datos.
-*   [DocumentacionTecnicaBD.md](./DocumentacionTecnicaBD.md): Documentación técnica detallada de la base de datos (ERD, Esquema SQL y Diccionario de Datos).
-*   [EstrategiaDeImplementacion.md](./EstrategiaDeImplementacion.md): Plan de proyecto por fases.
-*   [ExplicacionSistemaSMG.md](./ExplicacionSistemaSMG.md): Documento de alto nivel para el cliente.
-*   [ManualDeUsuario.md](./ManualDeUsuario.md): Guía para el uso de la aplicación (Pendiente).
+### 🏛️ Concilio de Tecnologías
+*   [**Roles y Responsabilidades**](./CONCILIO_TECNOLOGIAS.md): Definición de los roles agentes que gestionan este repositorio.
+
+### 📋 Reportes de Estado
+*   [QA Correctivo (Enero 2026)](./docs/reports/qa/QA_CORRECTIVE_REPORT.md): Estado actual de bugs y correcciones críticas.
+*   [Hitos del Proyecto](./docs/reports/milestones/): Resúmenes de hitos completados.
+
+### 🛠️ Documentación Técnica
+*   [**Contratos de Datos**](./docs/DATA_CONTRACTS.md): Estándar obligatorio para la comunicación Frontend-Backend.
+*   [Base de Datos](./docs/technical/BASE_DE_DATOS.md): Documentación técnica del esquema SQL.
+*   [Integración Frontend-Backend](./docs/FRONTEND_BACKEND_INTEGRATION_GUIDE.md): Guía de desarrollo.
+*   [Componentes UI](./docs/technical/SHADCN_INTEGRATION.md): Guía de uso de Shadcn/UI.
+
+### 📅 Planificación y Estrategia
+*   [Estrategia de Implementación](./docs/planning/ESTRATEGIA_IMPLEMENTACION.md): Plan de fases del proyecto.
+*   [Visión General](./docs/general/VISION_GENERAL.md): Descripción de alto nivel del sistema.
+*   [Propósito y Beneficios](./docs/general/PROPOSITO_BENEFICIOS.md): Valor estratégico para SMG.
+
+### 📜 Historial
+*   [Changelog](./Changelog.md): Historial de versiones del sistema.
