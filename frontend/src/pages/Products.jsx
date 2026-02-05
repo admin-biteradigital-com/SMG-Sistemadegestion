@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Plus, Edit, Trash2, Loader2, Package, AlertTriangle, Search, X } from "lucide-react"
+import { Plus, Edit, Trash2, Loader2, Package, AlertTriangle, Search, X, ChevronLeft, ChevronRight } from "lucide-react"
 import api from '@/api/axios';
 
 export default function Products() {
@@ -10,7 +10,13 @@ export default function Products() {
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
     const [editingProduct, setEditingProduct] = useState(null);
+
+    // Pagination State
     const [searchTerm, setSearchTerm] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalRecords, setTotalRecords] = useState(0);
+    const ITEMS_PER_PAGE = 10;
     const [formData, setFormData] = useState({
         nombre_producto_servicio: '',
         precio_unitario_sugerido: '',
@@ -19,13 +25,26 @@ export default function Products() {
     });
 
     useEffect(() => {
-        fetchProducts();
-    }, []);
+        // Debounce search to prevent too many requests
+        const timeoutId = setTimeout(() => {
+            fetchProducts(currentPage, searchTerm);
+        }, 500);
+        return () => clearTimeout(timeoutId);
+    }, [currentPage, searchTerm]);
 
-    const fetchProducts = async () => {
+    const fetchProducts = async (page = 1, search = '') => {
+        setLoading(true);
         try {
-            const response = await api.get('/products');
-            setProducts(response.data);
+            const response = await api.get(`/products?page=${page}&limit=${ITEMS_PER_PAGE}&search=${search}`);
+            // Check if response has new structure
+            if (response.data.meta) {
+                setProducts(response.data.data);
+                setTotalPages(response.data.meta.totalPages);
+                setTotalRecords(response.data.meta.total);
+            } else {
+                // Fallback for legacy format (just in case)
+                setProducts(response.data);
+            }
         } catch (error) {
             console.error('Error fetching products:', error);
         } finally {
@@ -82,9 +101,8 @@ export default function Products() {
         setShowForm(false);
     };
 
-    const filteredProducts = products.filter(p =>
-        p.nombre_producto_servicio.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    // Server-side filtered products are in 'products' state directly
+    const filteredProducts = products;
 
     const lowStockCount = products.filter(p => p.stock_actual < p.stock_seguridad_minimo).length;
 
@@ -219,7 +237,10 @@ export default function Products() {
                         type="text"
                         placeholder="Buscar productos..."
                         value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
+                        onChange={(e) => {
+                            setSearchTerm(e.target.value);
+                            setCurrentPage(1); // Reset to page 1 on search
+                        }}
                         className="w-full pl-12 pr-12 py-3 border-2 border-stone-200 rounded-xl focus:border-teal-500 focus:ring-4 focus:ring-teal-100 outline-none transition-all text-stone-900"
                     />
                     {searchTerm && (
@@ -238,7 +259,7 @@ export default function Products() {
                 <CardHeader className="bg-gradient-to-r from-stone-50 to-white border-b-2 border-stone-100">
                     <CardTitle className="text-xl text-stone-900">Catálogo de Productos</CardTitle>
                     <CardDescription className="text-stone-600">
-                        {filteredProducts.length} producto(s) {searchTerm && `encontrado(s) para "${searchTerm}"`}
+                        Mostrando {filteredProducts.length} de {totalRecords} registros
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="pt-6">
@@ -321,10 +342,40 @@ export default function Products() {
                                     })}
                                 </TableBody>
                             </Table>
+
+                        </div>
+                    )}
+
+                    {/* Pagination Controls */}
+                    {totalRecords > 0 && (
+                        <div className="flex items-center justify-between mt-4 border-t pt-4">
+                            <div className="text-sm text-stone-600">
+                                Página <span className="font-medium text-stone-900">{currentPage}</span> de <span className="font-medium text-stone-900">{totalPages}</span>
+                            </div>
+                            <div className="flex gap-2">
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                                    disabled={currentPage === 1 || loading}
+                                >
+                                    <ChevronLeft className="h-4 w-4 mr-1" />
+                                    Anterior
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                                    disabled={currentPage === totalPages || loading}
+                                >
+                                    Siguiente
+                                    <ChevronRight className="h-4 w-4 ml-1" />
+                                </Button>
+                            </div>
                         </div>
                     )}
                 </CardContent>
             </Card>
-        </div>
+        </div >
     )
 }

@@ -1,10 +1,51 @@
 const db = require('../config/db');
 
-// Get all products
+// Get all products with pagination
 const getAllProducts = async (req, res) => {
     try {
-        const result = await db.query('SELECT * FROM PRODUCTOS_SERVICIOS');
-        res.json(result.rows);
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const search = req.query.search || '';
+        const offset = (page - 1) * limit;
+
+        let queryText = 'SELECT * FROM PRODUCTOS_SERVICIOS';
+        let countQueryText = 'SELECT COUNT(*) FROM PRODUCTOS_SERVICIOS';
+        const queryParams = [];
+        
+        if (search) {
+            const searchClause = ' WHERE Nombre_Producto_Servicio ILIKE $1';
+            queryText += searchClause;
+            countQueryText += searchClause;
+            queryParams.push(`%${search}%`);
+        }
+
+        // Add sorting and pagination
+        // Note: IF search exists, parameter index for limit/offset shifts
+        const paramOffset = search ? 1 : 0;
+        
+        queryText += ` ORDER BY ID_Producto_Servicio DESC LIMIT $${paramOffset + 1} OFFSET $${paramOffset + 2}`;
+        
+        const finalParams = search 
+            ? [queryParams[0], limit, offset]
+            : [limit, offset];
+
+        const [productsResult, countResult] = await Promise.all([
+            db.query(queryText, finalParams),
+            db.query(countQueryText, search ? queryParams : [])
+        ]);
+
+        const totalRecords = parseInt(countResult.rows[0].count);
+        const totalPages = Math.ceil(totalRecords / limit);
+
+        res.json({
+            data: productsResult.rows,
+            meta: {
+                total: totalRecords,
+                page: page,
+                limit: limit,
+                totalPages: totalPages
+            }
+        });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Server error' });
