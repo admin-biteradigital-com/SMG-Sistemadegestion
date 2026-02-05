@@ -1,0 +1,72 @@
+# ╔═══════════════════════════════════════════════════════════════════════╗
+# ║  WORKFLOW: SECURITY SCAN                                              ║
+# ║  Propósito: Detección de vulnerabilidades en código y dependencias    ║
+# ╚═══════════════════════════════════════════════════════════════════════╝
+
+name: 🛡️ Security Scan
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  schedule:
+    - cron: '0 6 * * 1'  # Lunes 6 AM UTC
+
+jobs:
+  sast:
+    name: "SAST - Análisis Estático"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Run Bandit (Python SAST)
+        run: |
+          pip install bandit
+          bandit -r src/ -f json -o bandit-report.json || true
+          bandit -r src/ -ll  # Fail on medium+
+      
+      - name: Run Semgrep
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: >-
+            p/security-audit
+            p/owasp-top-ten
+            p/cwe-top-25
+
+  sca:
+    name: "SCA - Análisis de Dependencias"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: npm audit
+        run: |
+          npm audit --audit-level=moderate
+        continue-on-error: true  # Report but don't fail yet
+
+  secrets:
+    name: "Secret Detection"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Detect secrets
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: main
+          head: HEAD
+          extra_args: --debug --only-verified

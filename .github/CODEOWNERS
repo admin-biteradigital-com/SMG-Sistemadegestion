@@ -1,0 +1,45 @@
+# ╔═══════════════════════════════════════════════════════════════════════╗
+# ║  CODEOWNERS - Asignación de revisores obligatorios (4 ojos)           ║
+# ║  Cada cambio requiere aprobación del agente responsable del área      ║
+# ╚═══════════════════════════════════════════════════════════════════════╝
+
+# Default: Director del Conclave revisa todo
+* @AGENTE-01
+
+# Estrato I - Gobierno: Solo Zelmar aprueba
+/docs/ESTRATO-I-GOBIERNO/ @zelmar-velazquez
+
+# Estrato II - Planificación: Director + Arquitecto de Datos
+/docs/ESTRATO-II-PLANIFICACION/ @AGENTE-01 @AGENTE-02
+
+# Seguridad y Riesgos: Ingeniero de Identidad debe aprobar
+/docs/ESTRATO-II-PLANIFICACION/SEC-* @AGENTE-03
+/docs/ESTRATO-II-PLANIFICACION/DRP-* @AGENTE-04
+
+# Estrato III - Operación: Responsable del área técnica
+/docs/ESTRATO-III-OPERACION/ARQ-* @AGENTE-02
+/docs/ESTRATO-III-OPERACION/SOP-* @AGENTE-01
+/docs/ESTRATO-III-OPERACION/INFRA-* @AGENTE-04
+
+# Código fuente - Core: Ingeniero de Identidad (seguridad) + Arquitecto
+/src/core/identity/ @AGENTE-03 @AGENTE-02
+/src/core/security/ @AGENTE-03 @AGENTE-02
+/src/core/multitenancy/ @AGENTE-02 @AGENTE-04
+
+# Código fuente - Tenant SMG: Arquitecto de Datos
+/src/tenants/smg/ @AGENTE-02
+
+# Infraestructura: Ingeniero de Borde
+/infrastructure/ @AGENTE-04
+
+# Estrato IV - Evidencia: Documentalista Forense
+/docs/ESTRATO-IV-EVIDENCIA/ @AGENTE-05
+
+# Tests: Todos deben revisar, pero Documentalista verifica cobertura ALCOA+
+/tests/ @AGENTE-02 @AGENTE-03 @AGENTE-04 @AGENTE-05
+
+# Investigación: Arquitecto de Datos lidera
+/research/ @AGENTE-02
+
+# Workflow críticos: Solo Zelmar puede aprobar cambios
+/.github/workflows/ @zelmar-velazquez

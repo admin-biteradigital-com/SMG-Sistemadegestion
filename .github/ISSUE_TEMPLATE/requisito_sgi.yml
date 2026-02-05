@@ -1,0 +1,133 @@
+name: 🏛️ Requisito SGI
+description: Registrar un requisito funcional o no funcional con trazabilidad ALCOA+
+title: "[REQ-XXX] "
+labels: ["requisito", "fase-1", "pendiente-validacion"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 📜 Protocolo de Requisitos SGI
+        
+        Este template garantiza trazabilidad ALCOA+ desde el origen.
+        Cada requisito debe vincularse a un documento de Estrato II y tener un agente responsable.
+
+  - type: input
+    id: identificador
+    attributes:
+      label: "Identificador SGI"
+      description: "Formato: REQ-[FASE]-[CORRELATIVO] (ej: REQ-1-001)"
+      placeholder: "REQ-1-001"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: fase_cascada
+    attributes:
+      label: "Fase de Cascada"
+      description: "¿En qué fase se define este requisito?"
+      options:
+        - "Fase 1: Requisitos"
+        - "Fase 2: Diseño"
+        - "Fase 3: Implementación"
+        - "Fase 4: Pruebas"
+        - "Fase 5: Despliegue"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: tipo_requisito
+    attributes:
+      label: "Tipo de Requisito"
+      options:
+        - "Funcional (RF) - Característica de negocio"
+        - "No Funcional (RNF) - Seguridad, rendimiento, disponibilidad"
+        - "Interfaz (RI) - Integración externa (SII, ML, etc.)"
+        - "Legal (RL) - Cumplimiento normativo"
+    validations:
+      required: true
+
+  - type: textarea
+    id: descripcion
+    attributes:
+      label: "Descripción ALCOA+"
+      description: "Descripción precisa, medible, verificable"
+      placeholder: |
+        EL sistema DEBE [capacidad] PARA [objetivo de negocio]
+        
+        Criterios de aceptación:
+        1. [Criterio medible 1]
+        2. [Criterio medible 2]
+        
+        Evidencia de validación:
+        - [ ] Test case definido
+        - [ ] Documento SGI vinculado
+    validations:
+      required: true
+
+  - type: input
+    id: documento_sgi
+    attributes:
+      label: "Documento SGI de Origen"
+      description: "¿Qué documento del Estrato II justifica este requisito?"
+      placeholder: "BCM-02-BIA-SMG.md sección 3.2"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: agente_responsable
+    attributes:
+      label: "Agente Responsable"
+      description: "¿Quién tiene la autoridad técnica sobre este requisito?"
+      options:
+        - "AGENTE-01 - Director del Conclave"
+        - "AGENTE-02 - Arquitecto de Datos"
+        - "AGENTE-03 - Ingeniero de Identidad"
+        - "AGENTE-04 - Ingeniero de Borde"
+        - "AGENTE-05 - Documentalista Forense"
+        - "Zelmar Velazquez - Arquitecto Soberano"
+    validations:
+      required: true
+
+  - type: textarea
+    id: trazabilidad_negocio
+    attributes:
+      label: "Trazabilidad al Negocio SMG"
+      description: "¿Cómo impacta este requisito en las operaciones de Sebastián Marín?"
+      placeholder: |
+        Proceso de negocio afectado: [Compras/Ventas/Inventario/etc.]
+        
+        Beneficio tangible:
+        - Reducción de X horas en Y proceso
+    validations:
+      required: true
+
+  - type: textarea
+    id: riesgos
+    attributes:
+      label: "Análisis de Riesgo (SEC-04)"
+      description: "Evaluación preliminar de riesgos técnicos y de negocio"
+      value: |
+        **Probabilidad:** [Muy Baja/Baja/Media/Alta/Muy Alta]
+        **Impacto:** [Insignificante/Menor/Moderado/Mayor/Catastrófico]
+        **Nivel de Riesgo (NR):** [Calcular P x I]
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: dependencias
+    attributes:
+      label: "Dependencias Técnicas"
+      options:
+        - label: "Requiere cambio en modelo de datos (ARQ-01)"
+        - label: "Requiere integración externa (SII, ML, etc.)"
+        - label: "Requiere modificación de arquitectura de seguridad"
+        - label: "Requiere capacitación de usuarios SMG"
+        - label: "Tiene impacto en RTO/RPO declarados"
+
+  - type: input
+    id: estimacion_esfuerzo
+    attributes:
+      label: "Estimación de Esfuerzo"
+      description: "En horas-hombre, para planificación de Fase 3"
+      placeholder: "40 horas"

@@ -1,76 +1,132 @@
-# Sistema de Gestión y Control para SMG
+# SIGLO: Sistema Integral de Gestión Logística
+## Framework Soberano de SaaS para Autoventas y Distribución
 
-## 📖 Descripción del Proyecto
-Este es un proyecto de software a medida, diseñado y desarrollado por BitEra Digital para SMG, un emprendimiento de autoventa de golosinas en Chamiza, Región de los Lagos, Chile.
+<div align="center">
+  <img src="https://img.shields.io/badge/Estado-ACTIVADO-brightgreen?style=for-the-badge" alt="Estado">
+  <img src="https://img.shields.io/badge/Versión-1.0-blue?style=for-the-badge" alt="Versión">
+  <img src="https://img.shields.io/badge/Gobernanza-Cascada_Absoluta-red?style=for-the-badge" alt="Gobernanza">
+</div>
 
-El objetivo principal de este sistema es digitalizar y optimizar todas las operaciones de SMG, proporcionando control total y visibilidad completa de los flujos de negocio, desde la adquisición de productos hasta la venta y la gestión financiera. La implementación se realiza bajo una estrategia de despliegue gradual por fases, garantizando una adopción fluida y la entrega de valor incremental. El sistema se ha concebido como una herramienta estratégica para transformar el conocimiento tácito de Sebastián en datos objetivos y accionables, lo que le permitirá tomar decisiones informadas para el crecimiento sostenible de su empresa.
+---
 
-## ✨ Funcionalidades Clave
+## 🏛️ El Conclave de Agentes TI
 
-El sistema se compone de varios módulos interconectados, construidos para trabajar de forma coherente. Cada módulo está diseñado para resolver un problema operativo específico y contribuir a los objetivos estratégicos de SMG.
+Bajo la autoridad soberana de **Zelmar Tiago Velazquez Borges**, este repositorio constituye el epicentro técnico de **Bitera Digital** para la ejecución del proyecto **SMG** y su evolución hacia el framework **SIGLO**.
 
-### Gestión de Maestros
-*   **Proveedores:** Registro y gestión completa de la información de los proveedores, incluyendo datos de contacto y fiscalización (RUT). Esto permite una trazabilidad clara de las transacciones de compra.
-*   **Productos y Servicios:** Un catálogo completo de golosinas que va más allá de la simple descripción. Incluye la gestión de unidades de medida jerárquicas (Caja, Display, Bolsa, etc.) y factores de conversión, asegurando que el inventario se gestione en la unidad más relevante para la venta (ID\_Unidad\_Base).
-*   **Clientes:** Una base de datos detallada que no solo incluye el RUT y datos de contacto, sino también la gestión de múltiples sucursales por cliente. Los atributos de Latitud y Longitud preparan el terreno para la geolocalización y la optimización de rutas.
-*   **Empleados y Vehículos:** Registro de todo el personal (choferes, peones de carga) y la flota de vehículos. Esto es crucial para asignar responsabilidades a cada operación y para futuros análisis de rendimiento.
+### 👥 Cuadro de Mando y Responsabilidades
 
-### Gestión de Compras y Almacenamiento
-*   **Órdenes de Compra:** Creación y seguimiento de pedidos a proveedores. El sistema maneja el flujo de confirmación, registrando la respuesta del proveedor y permitiendo ajustes a la orden antes de la recepción, lo que evita sorpresas y errores.
-*   **Recepción de Mercadería:** Registro de la entrada física de productos al depósito. Se captura obligatoriamente el lote y la fecha de vencimiento de cada ítem, lo cual es vital para el control de calidad y la seguridad alimentaria.
-*   **Control de Inventario (Stock):** El inventario se gestiona en tiempo real, con una trazabilidad completa por lote y fecha de vencimiento. Esto permite aplicar la lógica FEFO (First Expired, First Out), minimizando las pérdidas por productos caducados.
+| Rol | Agente | Responsabilidad Soberana |
+| :--- | :--- | :--- |
+| **Arquitecto Soberano** | Zelmar Tiago Velazquez Borges | Autoridad BCMS, firmas ALCOA+, dispensas de riesgo |
+| **Director del Conclave** | [PENDIENTE: AGENTE-01] | Ejecución técnica, sincronización, cumplimiento SOPs |
+| **Arquitecto de Datos SMG** | [PENDIENTE: AGENTE-02] | Modelo BD v1.9+, ML/LLM, blockchain evaluación |
+| **Ingeniero de Identidad** | [PENDIENTE: AGENTE-03] | FreeIPA/Kerberos, SII auth, federación portal |
+| **Ingeniero de Borde** | [PENDIENTE: AGENTE-04] | pfSense, Cloudflare, multi-tenant isolation, CI/CD |
+| **Documentalista Forense** | [PENDIENTE: AGENTE-05] | ALCOA+ enforcement, commit tracing, AAR generation |
 
-### Gestión de Ventas y Finanzas
-*   **Órdenes de Carga y Transporte:** Planificación de la mercadería que sale del depósito y las rutas de autoventa. Cada carga se asocia a un vehículo, un chofer y una ruta, brindando una visión clara de la operación logística.
-*   **Registro de Ventas en Ruta:** Tus vendedores registran cada transacción con los clientes, detallando los productos, cantidades y precios. Permite especificar diferentes métodos de pago, incluyendo el crédito, con un registro de la fecha de vencimiento.
-*   **Gestión de Cuentas por Cobrar:** Un sistema robusto para el seguimiento de pagos pendientes y parciales. Los PAGOS\_RECIBIDOS se registran y actualizan automáticamente el estado de cobro de las ventas, facilitando la gestión financiera de la empresa.
-*   **Facturación:** Emisión de facturas y boletas, con registro de su estado.
+---
 
-### Integraciones y Funcionalidades Estratégicas (Fases Futuras)
-*   **Integración con SII (Servicio de Impuestos Internos de Chile):** En la fase final, el sistema se conectará directamente con el SII para el envío automatizado de documentos tributarios. Esto simplifica enormemente las obligaciones fiscales y garantiza el cumplimiento normativo.
-*   **Optimización Inteligente de Rutas:** El sistema utilizará algoritmos avanzados y datos de geolocalización para sugerir rutas más eficientes, minimizando costos de combustible y tiempos de entrega.
-*   **Análisis Predictivo de Demanda:** Se emplearán modelos de análisis para predecir las necesidades de compra, permitiendo a SMG optimizar el reabastecimiento y evitar quiebres de stock.
-*   **CRM y Portal de Clientes:** Herramientas para una gestión de clientes más profunda y un portal para que los clientes puedan hacer sus pedidos directamente, mejorando su experiencia y reduciendo la carga administrativa de Sebastián.
-*   **Sistema de Rendimiento:** Un módulo de evaluación automática del desempeño de empleados que fomenta la motivación y proporciona datos objetivos para la toma de decisiones.
+## 📜 Tabla de Autoridad y Gobernanza
 
-## 🚀 Estrategia de Despliegue
+| Prioridad | Innovación | Estado | Documento Técnico |
+| :--- | :--- | :--- | :--- |
+| **P1** | Integración SII Chile | 🔴 Planificación | `docs/ESTRATO-III-OPERACION/SOP-03-Integracion-SII.md` |
+| **P1** | Optimización de rutas ML | 🔴 Planificación | `docs/ESTRATO-III-OPERACION/ARQ-05-ML-Rutas.md` |
+| **P1** | Portal clientes federado | 🔴 Planificación | `docs/ESTRATO-III-OPERACION/ARQ-06-Portal-Federacion.md` |
+| **P2** | Predicción demanda LLMs | 🟡 Investigación | `docs/ESTRATO-III-OPERACION/ARQ-07-LLM-Prediccion.md` |
+| **P2** | Arquitectura multi-tenant | 🔴 Planificación | `docs/ESTRATO-III-OPERACION/ARQ-03-Arquitectura-MultiTenant.md` |
+| **P3** | Blockchain trazabilidad lotes | 🟡 Investigación | `research/blockchain-lotes/README.md` |
+| **P4** | IoT inventario automático | ⚪ Futuro | `research/iot-inventario/README.md` |
 
-La implementación del sistema de SMG se llevará a cabo en 3 fases, con una transición controlada y progresiva para asegurar el éxito del proyecto.
+---
 
-1.  **Fase 1: Cimientos y Control Básico:** Nos enfocamos en la digitalización de los procesos más críticos y la creación de la base de datos central. El objetivo es que Sebastián y su equipo se familiaricen con la plataforma y construyan confianza en su capacidad para gestionar el inventario, las compras y las ventas de forma precisa.
-2.  **Fase 2: Optimización y Expansión:** Una vez que los cimientos estén sólidos, añadiremos funcionalidades que generen valor directo: gestión de pedidos de clientes, CRM básico y la primera versión de la optimización de rutas. Esta fase busca aumentar la eficiencia y comenzar a convertir los datos en inteligencia de negocio.
-3.  **Fase 3: Estrategia y Crecimiento:** La fase final se centra en la ventaja competitiva. Aquí se implementarán las funcionalidades avanzadas como la integración con el SII, la optimización de rutas avanzada, la predicción de demanda, el portal de clientes y el sistema de incentivos.
+## 🏗️ Arquitectura de Estratos SGI
 
-## 🛠️ Tecnologías Utilizadas
+```
+SIGLO-BiteraDigital/
+┌─────────────────────────────────────────────────────────────────┐
+│  ESTRATO I - GOBIERNO (Estratégico)                             │
+│  ├─ GOV-00-Alcance-Conclave.md        ← Constitución política   │
+│  ├─ GOV-01-Manual-Operativo.md        ← Reglas de operación     │
+│  ├─ GOV-03-Objetivos-KPIs.md          ← Métricas de éxito       │
+│  └─ GOV-04-Riesgos-Directivos.md      ← Apetito de riesgo       │
+├─────────────────────────────────────────────────────────────────┤
+│  ESTRATO II - PLANIFICACIÓN (Táctico)                           │
+│  ├─ BCM-01-Metodologia-Cascada.md     ← Cronograma proyecto     │
+│  ├─ BCM-02-BIA-SMG.md                 ← Impacto al negocio      │
+│  ├─ SEC-03-SoA-Controles.md           ← Controles de seguridad  │
+│  ├─ SEC-04-Matriz-Riesgos.md          ← Amenazas y mitigación   │
+│  └─ DRP-01-Estrategia-Recuperacion.md ← Continuidad operativa   │
+├─────────────────────────────────────────────────────────────────┤
+│  ESTRATO III - OPERACIÓN (Ejecución)                            │
+│  ├─ ARQ-01-Modelo-Datos-SMG.md        ← ERD v2.0 extendido      │
+│  ├─ ARQ-02-Topologia-Red.md           ← Zero Trust + SII        │
+│  ├─ SOP-01-Procedimiento-Commit.md    ← ALCOA+ enforcement      │
+│  ├─ SOP-02-Code-Review-Cuatro-Ojos.md ← Calidad de código       │
+│  └─ INFRA-05-Backup-Inmutable.md      ← Protocolo 3-2-1-0       │
+├─────────────────────────────────────────────────────────────────┤
+│  ESTRATO IV - EVIDENCIA (Forense)                               │
+│  ├─ registros/commits/                ← Logs de Git firmados    │
+│  ├─ registros/decisiones/             ← Actas técnicas          │
+│  ├─ auditorias/internas/              ← Revisiones SGI          │
+│  └─ aar/                              ← After Action Reports    │
+└─────────────────────────────────────────────────────────────────┘
+```
 
-Para garantizar un sistema robusto, escalable y mantenible, utilizaremos las siguientes tecnologías:
-*   **Base de Datos:** PostgreSQL, base de datos relacional robusta y de código abierto.
-*   **Backend:** Node.js (Express.js), ideal para el desarrollo ágil de APIs y la integración con servicios de terceros.
-*   **Frontend:** React para la aplicación web y React Native para la aplicación móvil, permitiendo una experiencia de usuario fluida y un desarrollo multiplataforma eficiente.
-*   **Infraestructura:** Infraestructura virtualizada (Hyper-V) con potencial para migración a servicios en la nube (GCP/AWS).
-*   **Herramientas de Colaboración:** GitLab para el control de versiones, la automatización del ciclo de desarrollo (CI/CD) y la gestión de proyectos de forma integrada.
+---
 
-## 📚 Documentación
+## ⚡ Inicio Rápido (Solo Agentes Autorizados)
 
-La documentación del proyecto ha sido reorganizada para facilitar su acceso y mantenimiento.
+### 🔑 Prerrequisitos de Soberanía
 
-### 🏛️ Concilio de Tecnologías
-*   [**Roles y Responsabilidades**](./CONCILIO_TECNOLOGIAS.md): Definición de los roles agentes que gestionan este repositorio.
+1. **Autenticación en FreeIPA**:
+   ```bash
+   kinit usuario@BITERADIGITAL.COM
+   ```
+2. **Firma GPG obligatoria**:
+   ```bash
+   git config --global user.signingkey <TU-KEY-ID>
+   git config --global commit.gpgsign true
+   ```
+3. **Verificación de Entorno**:
+   ```bash
+   ./scripts/verify-sovereignty.sh
+   ```
 
-### 📋 Reportes de Estado
-*   [QA Correctivo (Enero 2026)](./docs/reports/qa/QA_CORRECTIVE_REPORT.md): Estado actual de bugs y correcciones críticas.
-*   [Hitos del Proyecto](./docs/reports/milestones/): Resúmenes de hitos completados.
+### 🛠️ Flujo de Trabajo ALCOA+
 
-### 🛠️ Documentación Técnica
-*   [**Contratos de Datos**](./docs/DATA_CONTRACTS.md): Estándar obligatorio para la comunicación Frontend-Backend.
-*   [Base de Datos](./docs/technical/BASE_DE_DATOS.md): Documentación técnica del esquema SQL.
-*   [Integración Frontend-Backend](./docs/FRONTEND_BACKEND_INTEGRATION_GUIDE.md): Guía de desarrollo.
-*   [Componentes UI](./docs/technical/SHADCN_INTEGRATION.md): Guía de uso de Shadcn/UI.
+```bash
+# 1. Crear rama de fase
+git checkout -b fase1/CONCLAVE-SMG-001-modelo-fefo-v2
 
-### 📅 Planificación y Estrategia
-*   [Estrategia de Implementación](./docs/planning/ESTRATEGIA_IMPLEMENTACION.md): Plan de fases del proyecto.
-*   [Visión General](./docs/general/VISION_GENERAL.md): Descripción de alto nivel del sistema.
-*   [Propósito y Beneficios](./docs/general/PROPOSITO_BENEFICIOS.md): Valor estratégico para SMG.
+# 2. Commit firmado con metadatos ALCOA+
+git commit -S -m "[ARQ-01] Feat: Implementa modelo FEFO v2
 
-### 📜 Historial
-*   [Changelog](./Changelog.md): Historial de versiones del sistema.
+Extiende esquema v1.9 con trazabilidad blockchain-ready.
+
+Referencia: ARQ-01 sección 4.3, BCM-02 RTO<4h
+Validación: tests/stock/test_fefo_v2.py
+
+Firmas:
+- Autor: AGENTE-02 @$(date -u +%Y-%m-%dT%H:%M:%SZ)
+- Revisor: [PENDIENTE]"
+```
+
+---
+
+## 🔒 Seguridad y Soberanía del Dato
+
+| Principio | Implementación Técnica | Verificación |
+| :--- | :--- | :--- |
+| **Cero Confianza** | FreeIPA + Kerberos + MFA | `klist` válido obligatorio |
+| **Inmutabilidad** | Commits firmados GPG | Validación en CI |
+| **Trazabilidad** | Metadatos ALCOA+ en cada commit | `alcoa-validation.yml` |
+| **Cifrado Total** | LUKS + TLS 1.3 + WORM | `security-scan.yml` |
+
+---
+
+<div align="center">
+  <i>"El código que no puede ser auditado, no existe para el SGI."</i><br>
+  <b>Conclave SIGLO - Bajo la autoridad de Zelmar Velazquez Borges</b><br>
+  2025 - Bitera Digital
+</div>

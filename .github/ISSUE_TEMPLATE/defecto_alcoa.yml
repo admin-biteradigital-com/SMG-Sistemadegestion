@@ -1,0 +1,62 @@
+name: 🚨 Defecto ALCOA+
+description: No conformidad en estándar ALCOA+ (grave)
+title: "[DEFECT-ALCOA-XXX] "
+labels: ["defecto", "alcoa+", "critico"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🚨 DEFECTO EN ESTÁNDAR ALCOA+
+        
+        Este template se usa cuando se detecta una violación a los pilares ALCOA+.
+        Dispara proceso de corrección inmediata y posible AAR.
+
+  - type: dropdown
+    id: pilar_afectado
+    attributes:
+      label: "Pilar ALCOA+ Violado"
+      options:
+        - "Attributable - No se puede identificar al autor"
+        - "Legible - Información ilegible o ambigua"
+        - "Contemporaneous - Registro fuera de tiempo"
+        - "Original - Evidencia alterada o copia"
+        - "Exacto - Información incorrecta"
+        - "Plus: Completo - Faltan datos requeridos"
+        - "Plus: Consistente - Contradicción entre registros"
+        - "Plus: Duradero - Medio no garantiza persistencia"
+        - "Plus: Disponible - No se puede acceder a la evidencia"
+
+  - type: textarea
+    id: descripcion_defecto
+    attributes:
+      label: "Descripción del Defecto"
+      placeholder: |
+        ¿Qué se detectó?
+        ¿Dónde? (commit, documento, registro)
+    validations:
+      required: true
+
+  - type: textarea
+    id: impacto
+    attributes:
+      label: "Impacto en SGI"
+      description: "¿Qué riesgo introduce este defecto?"
+      value: |
+        **Severidad:** [Crítica/Mayor/Menor]
+        **Riesgo de auditoría:** [Sí/No]
+        **Riesgo legal/contrato:** [Sí/No]
+        
+        **Acción inmediata requerida:**
+        - [ ]
+
+  - type: checkboxes
+    id: acciones_correctivas
+    attributes:
+      label: "Acciones Correctivas Propuestas"
+      options:
+        - label: "Corrección inmediata del registro/documento"
+        - label: "Investigación de causas (5 Porqués)"
+        - label: "Actualización de SOP para prevención"
+        - label: "Generación de AAR (After Action Report)"
+        - label: "Notificación a Zelmar si severidad Crítica"

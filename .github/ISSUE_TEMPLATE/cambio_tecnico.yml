@@ -1,0 +1,62 @@
+name: 🔧 Cambio Técnico (Change Request)
+description: Solicitud de cambio en diseño o implementación
+title: "[CHANGE-XXX] "
+labels: ["cambio", "analisis-impacto"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## ⚠️ Protocolo de Cambio Técnico
+        
+        Todo cambio post-aprobación de fase requiere análisis de impacto BCMS.
+        Este template activa el proceso de "4 ojos" para modificaciones.
+
+  - type: input
+    id: identificador_cambio
+    attributes:
+      label: "Identificador de Cambio"
+      placeholder: "CHANGE-2-001 (Fase 2, cambio 1)"
+    validations:
+      required: true
+
+  - type: textarea
+    id: cambio_propuesto
+    attributes:
+      label: "Descripción del Cambio"
+      placeholder: |
+        ¿Qué se propone modificar?
+        ¿Por qué es necesario?
+    validations:
+      required: true
+
+  - type: input
+    id: documento_afectado
+    attributes:
+      label: "Documento/Entregable Afectado"
+      placeholder: "ARQ-01-Modelo-Datos-SMG.md sección 4.2"
+    validations:
+      required: true
+
+  - type: textarea
+    id: impacto_bcms
+    attributes:
+      label: "Análisis de Impacto BCMS"
+      description: "¿Cómo afecta este cambio a la continuidad?"
+      value: |
+        **Impacto en RTO:** [Ninguno/Extiende/Reduce]
+        **Impacto en RPO:** [Ninguno/Extiende/Reduce]
+        **Nuevo riesgo introducido:** [Descripción]
+        **Mitigación:** [Control compensatorio]
+        
+        **¿Requiere actualización de DRP-01?** [Sí/No]
+
+  - type: checkboxes
+    id: aprobaciones_requeridas
+    attributes:
+      label: "Aprobaciones Requeridas (4 Ojos)"
+      options:
+        - label: "Agente Responsable del área técnica"
+        - label: "Documentalista Forense (ALCOA+)"
+        - label: "Director del Conclave (impacto cronograma)"
+        - label: "Zelmar Velazquez (si impacta seguridad o RTO/RPO)"
