@@ -41,7 +41,7 @@ export default function Sales() {
                 pending: statsRes.data.pendingSales || 0
             });
 
-            const salesData = salesRes.data.data || salesRes.data;
+            const salesData = salesRes.data.data || (Array.isArray(salesRes.data) ? salesRes.data : []);
             setRecentSales(salesData);
         } catch (error) {
             console.error('Error fetching sales data:', error);
@@ -192,16 +192,16 @@ export default function Sales() {
                                                 Venta #{sale.id_orden_venta}
                                             </p>
                                             <p className="text-sm text-stone-500">
-                                                {new Date(sale.fecha_orden).toLocaleDateString('es-CL')}
+                                                {new Date(sale.fecha_venta || sale.fecha_orden).toLocaleDateString('es-CL')}
                                             </p>
                                         </div>
                                     </div>
                                     <div className="text-right">
                                         <p className="font-bold text-stone-900">
-                                            ${parseFloat(sale.monto_total || 0).toLocaleString('es-CL')}
+                                            ${parseFloat(sale.monto_total_venta || 0).toLocaleString('es-CL')}
                                         </p>
                                         <p className="text-xs text-stone-500 capitalize">
-                                            {sale.estado_pago || 'Pendiente'}
+                                            {sale.estado_venta || 'Completada'}
                                         </p>
                                     </div>
                                 </motion.div>

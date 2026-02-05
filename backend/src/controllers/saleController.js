@@ -78,7 +78,7 @@ const getSaleStats = async (req, res) => {
 
 // Create Sale
 const createSale = async (req, res) => {
-    const {
+    let {
         ID_Orden_Venta,
         ID_Destino_Transporte,
         Fecha_Venta,
@@ -97,6 +97,18 @@ const createSale = async (req, res) => {
     try {
         await client.query('BEGIN');
 
+        // Auto-generate ID_Orden_Venta if not provided
+        if (!ID_Orden_Venta) {
+            const maxSaleRes = await client.query('SELECT MAX(ID_Orden_Venta) as max_id FROM ORDENES_VENTA');
+            ID_Orden_Venta = (parseInt(maxSaleRes.rows[0].max_id) || 0) + 1;
+        }
+
+        // Set mandatory defaults if missing
+        ID_Destino_Transporte = ID_Destino_Transporte || 1;
+        ID_Agente_Venta = ID_Agente_Venta || 1;
+        Fecha_Venta = Fecha_Venta || new Date();
+        Tipo_Documento_Venta = Tipo_Documento_Venta || 'Boleta';
+
         // Insert Sale Header
         const insertSaleText = `
       INSERT INTO ORDENES_VENTA (
@@ -114,15 +126,25 @@ const createSale = async (req, res) => {
 
         // Insert Details
         if (Items && Items.length > 0) {
+            // Get current max detail ID to increment from
+            const maxDetailRes = await client.query('SELECT MAX(ID_Detalle_Venta) as max_id FROM DETALLES_ORDEN_VENTA');
+            let nextDetailId = (parseInt(maxDetailRes.rows[0].max_id) || 0) + 1;
+
             for (const item of Items) {
-                const { ID_Detalle_Venta, ID_Producto_Servicio, Cantidad_Vendida, Precio_Unitario_Venta } = item;
+                let { ID_Detalle_Venta, ID_Producto_Servicio, Cantidad_Vendida, Precio_Unitario_Venta } = item;
+
+                if (!ID_Detalle_Venta) {
+                    ID_Detalle_Venta = nextDetailId++;
+                }
+
+                const subtotal = Cantidad_Vendida * Precio_Unitario_Venta;
                 const insertDetailText = `
           INSERT INTO DETALLES_ORDEN_VENTA (
-            ID_Detalle_Venta, ID_Orden_Venta, ID_Producto_Servicio, Cantidad_Vendida, Precio_Unitario_Venta
-          ) VALUES ($1, $2, $3, $4, $5)
+            ID_Detalle_Venta, ID_Orden_Venta, ID_Producto_Servicio, Cantidad_Vendida, Precio_Unitario_Venta, Subtotal_Linea_Venta
+          ) VALUES ($1, $2, $3, $4, $5, $6)
         `;
                 const insertDetailValues = [
-                    ID_Detalle_Venta, ID_Orden_Venta, ID_Producto_Servicio, Cantidad_Vendida, Precio_Unitario_Venta
+                    ID_Detalle_Venta, ID_Orden_Venta, ID_Producto_Servicio, Cantidad_Vendida, Precio_Unitario_Venta, subtotal
                 ];
                 await client.query(insertDetailText, insertDetailValues);
             }

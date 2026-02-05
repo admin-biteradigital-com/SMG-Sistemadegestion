@@ -28,7 +28,7 @@ const getClientById = async (req, res) => {
 
 // Create Client
 const createClient = async (req, res) => {
-    const {
+    let {
         ID_Cliente,
         Razon_Social,
         RUT_Cliente,
@@ -38,6 +38,12 @@ const createClient = async (req, res) => {
     } = req.body;
 
     try {
+        // Auto-generate ID if not provided
+        if (!ID_Cliente) {
+            const maxRes = await db.query('SELECT MAX(ID_Cliente) as max_id FROM CLIENTES');
+            ID_Cliente = (parseInt(maxRes.rows[0].max_id) || 0) + 1;
+        }
+
         const result = await db.query(
             'INSERT INTO CLIENTES (ID_Cliente, Razon_Social, RUT_Cliente, Ciclo_Reabastecimiento_Dias, Limite_Credito_Autorizado, Segmento_Cliente) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
             [ID_Cliente, Razon_Social, RUT_Cliente, Ciclo_Reabastecimiento_Dias, Limite_Credito_Autorizado, Segmento_Cliente]

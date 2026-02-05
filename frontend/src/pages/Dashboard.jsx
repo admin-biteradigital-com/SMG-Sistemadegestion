@@ -33,12 +33,13 @@ export default function Dashboard() {
         try {
             const [salesStats, productsRes, clientsRes] = await Promise.all([
                 api.get('/sales/stats'),
-                api.get('/products?page=1&limit=1'),
+                api.get('/products?page=1&limit=100'), // Get more for low stock calculation
                 api.get('/clients')
             ]);
 
-            const lowStock = productsRes.data.data?.filter(p =>
-                p.stock_actual <= p.stock_seguridad_minimo
+            const productList = productsRes.data.data || (Array.isArray(productsRes.data) ? productsRes.data : []);
+            const lowStock = productList.filter(p =>
+                (p.stock_actual || 0) <= (p.stock_seguridad_minimo || 0)
             ).length || 0;
 
             setStats({
@@ -46,8 +47,8 @@ export default function Dashboard() {
                 todayAmount: salesStats.data.todaySalesAmount || 0,
                 pendingSales: salesStats.data.pendingSales || 0,
                 lowStockCount: lowStock,
-                totalProducts: productsRes.data.meta?.totalRecords || 0,
-                totalClients: clientsRes.data?.length || 0
+                totalProducts: productsRes.data.meta?.total || productsRes.data.meta?.totalRecords || productList.length,
+                totalClients: Array.isArray(clientsRes.data) ? clientsRes.data.length : 0
             });
         } catch (error) {
             console.error('Error fetching dashboard data:', error);

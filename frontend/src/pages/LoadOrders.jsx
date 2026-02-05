@@ -1,8 +1,20 @@
 import { useState, useEffect } from 'react';
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Plus, Package, Calendar, Check, X } from "lucide-react"
+import { motion, AnimatePresence } from 'framer-motion';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+    Plus,
+    Package,
+    Calendar,
+    Check,
+    X,
+    Truck,
+    Loader2,
+    Search,
+    ChevronRight,
+    ClipboardList
+} from "lucide-react";
 import api from '@/api/axios';
 
 export default function LoadOrders() {
@@ -18,15 +30,18 @@ export default function LoadOrders() {
     }, []);
 
     const fetchData = async () => {
+        setLoading(true);
         try {
             const [ordersRes, productsRes, vehiclesRes] = await Promise.all([
                 api.get('/load-orders'),
                 api.get('/products'),
                 api.get('/vehicles')
             ]);
-            setOrders(ordersRes.data);
-            setProducts(productsRes.data);
-            setVehicles(vehiclesRes.data);
+
+            // Robust data handling
+            setOrders(Array.isArray(ordersRes.data) ? ordersRes.data : (ordersRes.data?.data || []));
+            setProducts(Array.isArray(productsRes.data) ? productsRes.data : (productsRes.data?.data || []));
+            setVehicles(Array.isArray(vehiclesRes.data) ? vehiclesRes.data : (vehiclesRes.data?.data || []));
         } catch (error) {
             console.error('Error fetching data:', error);
         } finally {
@@ -37,8 +52,8 @@ export default function LoadOrders() {
     const addProductToLoad = () => {
         setSelectedProducts([...selectedProducts, {
             id_producto_servicio: '',
-            cantidad_cargada: '',
-            temp: Math.random()
+            cantidad_cargada: 1,
+            temp: Math.random().toString(36).substr(2, 9)
         }]);
     };
 
@@ -58,23 +73,30 @@ export default function LoadOrders() {
 
         try {
             const orderData = {
-                id_vehiculo: formData.get('id_vehiculo'),
-                id_ruta: formData.get('id_ruta') || null,
-                productos: selectedProducts.filter(p => p.id_producto_servicio && p.cantidad_cargada)
+                ID_Vehiculo: parseInt(formData.get('id_vehiculo')),
+                ID_Ruta: formData.get('id_ruta') ? parseInt(formData.get('id_ruta')) : null,
+                Items: selectedProducts
+                    .filter(p => p.id_producto_servicio && p.cantidad_cargada)
+                    .map(p => ({
+                        ID_Producto_Servicio: parseInt(p.id_producto_servicio),
+                        Cantidad_Cargada: parseInt(p.cantidad_cargada)
+                    }))
             };
 
             await api.post('/load-orders', orderData);
             fetchData();
             setShowForm(false);
             setSelectedProducts([]);
+            alert('Orden de carga registrada exitosamente');
         } catch (error) {
             console.error('Error creating load order:', error);
-            alert('Error al crear orden de carga');
+            alert('Error al crear orden de carga: ' + (error.response?.data?.details || error.message));
         }
     };
 
     const formatDate = (dateString) => {
-        return new Date(dateString).toLocaleDateString('es-ES', {
+        if (!dateString) return 'Hoy';
+        return new Date(dateString).toLocaleDateString('es-CL', {
             year: 'numeric',
             month: 'short',
             day: 'numeric',
@@ -87,13 +109,19 @@ export default function LoadOrders() {
         <div className="space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight">Órdenes de Carga</h2>
-                    <p className="text-muted-foreground">
-                        Preparación matutina - Cargar productos en vehículos
+                    <h2 className="text-3xl font-bold text-stone-900 flex items-center gap-2">
+                        <Truck className="h-8 w-8 text-orange-600" />
+                        Logística y Despacho
+                    </h2>
+                    <p className="text-stone-600 mt-1">
+                        Preparación de carga matutina para distribución.
                     </p>
                 </div>
                 {!showForm && (
-                    <Button onClick={() => setShowForm(true)} className="bg-orange-600 hover:bg-orange-700">
+                    <Button
+                        onClick={() => setShowForm(true)}
+                        className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white shadow-lg shadow-orange-200"
+                    >
                         <Plus className="mr-2 h-4 w-4" />
                         Nueva Orden de Carga
                     </Button>
@@ -101,149 +129,179 @@ export default function LoadOrders() {
             </div>
 
             {showForm && (
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Nueva Orden de Carga</CardTitle>
-                        <CardDescription>Registra los productos que se cargarán en el vehículo</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium">Vehículo *</label>
-                                    <select
-                                        name="id_vehiculo"
-                                        required
-                                        className="w-full px-3 py-2 border rounded-md"
-                                    >
-                                        <option value="">Seleccionar vehículo</option>
-                                        {vehicles.map(v => (
-                                            <option key={v.id_vehiculo} value={v.id_vehiculo}>
-                                                {v.patente} - {v.marca} {v.modelo} ({v.tipo_vehiculo})
-                                            </option>
-                                        ))}
-                                    </select>
+                <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
+                    <Card className="border-2 border-orange-100 shadow-2xl overflow-hidden rounded-[2rem]">
+                        <div className="bg-gradient-to-r from-orange-500 to-orange-600 h-2"></div>
+                        <CardHeader className="bg-white">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <CardTitle className="text-2xl text-stone-900">Configurar Carga</CardTitle>
+                                    <CardDescription>Asignación de productos a flota vehicular</CardDescription>
                                 </div>
+                                <Button variant="ghost" size="icon" onClick={() => setShowForm(false)}>
+                                    <X className="h-6 w-6" />
+                                </Button>
                             </div>
-
-                            <div className="space-y-2">
-                                <div className="flex items-center justify-between">
-                                    <label className="text-sm font-medium">Productos a Cargar</label>
-                                    <Button
-                                        type="button"
-                                        size="sm"
-                                        variant="outline"
-                                        onClick={addProductToLoad}
-                                    >
-                                        <Plus className="h-4 w-4 mr-2" />
-                                        Añadir Producto
-                                    </Button>
-                                </div>
-
-                                {selectedProducts.map((item) => (
-                                    <div key={item.temp} className="flex gap-2">
+                        </CardHeader>
+                        <CardContent className="p-8 bg-white">
+                            <form onSubmit={handleSubmit} className="space-y-8">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-bold text-stone-700 flex items-center gap-2">
+                                            <Truck className="h-4 w-4 text-orange-600" /> Vehículo Responsable *
+                                        </label>
                                         <select
-                                            value={item.id_producto_servicio}
-                                            onChange={(e) => updateProduct(item.temp, 'id_producto_servicio', e.target.value)}
-                                            className="flex-1 px-3 py-2 border rounded-md"
+                                            name="id_vehiculo"
+                                            required
+                                            className="w-full px-4 py-3 bg-stone-50 border-2 border-stone-100 rounded-2xl focus:border-orange-500 outline-none transition-all font-medium"
                                         >
-                                            <option value="">Seleccionar producto</option>
-                                            {products.map(p => (
-                                                <option key={p.id_producto_servicio} value={p.id_producto_servicio}>
-                                                    {p.nombre_producto_servicio} (Stock: {p.stock_actual})
+                                            <option value="">Seleccionar vehículo de la flota</option>
+                                            {vehicles.map(v => (
+                                                <option key={v.id_vehiculo} value={v.id_vehiculo}>
+                                                    {v.patente} - {v.marca} {v.modelo}
                                                 </option>
                                             ))}
                                         </select>
-                                        <input
-                                            type="number"
-                                            placeholder="Cantidad"
-                                            value={item.cantidad_cargada}
-                                            onChange={(e) => updateProduct(item.temp, 'cantidad_cargada', e.target.value)}
-                                            className="w-32 px-3 py-2 border rounded-md"
-                                        />
+                                    </div>
+                                </div>
+
+                                <div className="space-y-4">
+                                    <div className="flex items-center justify-between border-b pb-4">
+                                        <h3 className="font-bold text-stone-800 flex items-center gap-2">
+                                            <Package className="h-5 w-5 text-orange-600" /> Detalle de Productos
+                                        </h3>
                                         <Button
                                             type="button"
-                                            variant="ghost"
-                                            size="icon"
-                                            onClick={() => removeProduct(item.temp)}
-                                            className="text-red-600"
+                                            size="sm"
+                                            variant="outline"
+                                            onClick={addProductToLoad}
+                                            className="border-orange-200 text-orange-700 hover:bg-orange-50 rounded-xl"
                                         >
-                                            <X className="h-4 w-4" />
+                                            <Plus className="h-4 w-4 mr-2" /> Agregar Item
                                         </Button>
                                     </div>
-                                ))}
-                            </div>
 
-                            <div className="flex gap-2">
-                                <Button type="submit" className="bg-orange-600 hover:bg-orange-700">
-                                    Crear Orden de Carga
-                                </Button>
-                                <Button type="button" variant="outline" onClick={() => {
-                                    setShowForm(false);
-                                    setSelectedProducts([]);
-                                }}>
-                                    Cancelar
-                                </Button>
-                            </div>
-                        </form>
-                    </CardContent>
-                </Card>
+                                    <div className="space-y-3">
+                                        {selectedProducts.map((item) => (
+                                            <div key={item.temp} className="flex gap-3 animate-in fade-in slide-in-from-right-4 duration-300">
+                                                <div className="flex-grow">
+                                                    <select
+                                                        value={item.id_producto_servicio}
+                                                        onChange={(e) => updateProduct(item.temp, 'id_producto_servicio', e.target.value)}
+                                                        className="w-full px-4 py-3 bg-stone-50 border-2 border-stone-100 rounded-2xl focus:border-orange-500 outline-none transition-all font-medium"
+                                                    >
+                                                        <option value="">Buscar producto...</option>
+                                                        {products.map(p => (
+                                                            <option key={p.id_producto_servicio} value={p.id_producto_servicio}>
+                                                                {p.nombre_producto_servicio} (Stock: {p.stock_actual || 0})
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                                <div className="w-32">
+                                                    <input
+                                                        type="number"
+                                                        placeholder="Cant."
+                                                        value={item.cantidad_cargada}
+                                                        onChange={(e) => updateProduct(item.temp, 'cantidad_cargada', e.target.value)}
+                                                        className="w-full px-4 py-3 bg-stone-50 border-2 border-stone-100 rounded-2xl focus:border-orange-500 outline-none transition-all font-bold text-center"
+                                                    />
+                                                </div>
+                                                <Button
+                                                    type="button"
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    onClick={() => removeProduct(item.temp)}
+                                                    className="h-12 w-12 rounded-xl text-stone-300 hover:text-red-500 hover:bg-red-50"
+                                                >
+                                                    <X className="h-5 w-5" />
+                                                </Button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div className="flex gap-3 pt-6 border-t font-bold">
+                                    <Button
+                                        type="submit"
+                                        className="bg-gradient-to-r from-orange-500 to-orange-600 hover:scale-105 transition-all text-white shadow-xl rounded-2xl h-12 px-8"
+                                    >
+                                        Registrar Orden de Carga
+                                    </Button>
+                                    <Button type="button" variant="outline" onClick={() => {
+                                        setShowForm(false);
+                                        setSelectedProducts([]);
+                                    }} className="border-2 rounded-2xl h-12">
+                                        Cancelar
+                                    </Button>
+                                </div>
+                            </form>
+                        </CardContent>
+                    </Card>
+                </motion.div>
             )}
 
-            <Card>
-                <CardHeader>
-                    <CardTitle>Órdenes de Hoy</CardTitle>
-                    <CardDescription>{orders.length} orden(es) de carga</CardDescription>
+            <Card className="glass-white border-white/20 shadow-xl overflow-hidden rounded-[2rem]">
+                <CardHeader className="bg-stone-50/50 border-b border-stone-100">
+                    <CardTitle className="text-xl">Historial de Carga</CardTitle>
+                    <CardDescription>Seguimiento de despacho y flota</CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-0">
                     {loading ? (
-                        <div className="flex justify-center py-8">Cargando...</div>
+                        <div className="py-20 flex flex-col items-center justify-center">
+                            <Loader2 className="h-10 w-10 animate-spin text-orange-600 mb-4" />
+                            <p className="text-stone-500 font-medium">Consultando registros...</p>
+                        </div>
                     ) : orders.length === 0 ? (
-                        <div className="text-center py-12">
-                            <Package className="h-12 w-12 mx-auto text-muted-foreground/50" />
-                            <h3 className="mt-4 font-semibold">Sin órdenes de carga</h3>
-                            <p className="text-sm text-muted-foreground mt-2">
-                                Crea una orden para comenzar la jornada
-                            </p>
-                            <Button onClick={() => setShowForm(true)} className="mt-4 bg-orange-600 hover:bg-orange-700">
-                                <Plus className="mr-2 h-4 w-4" />
-                                Crear Primera Orden
-                            </Button>
+                        <div className="py-20 text-center">
+                            <ClipboardList className="h-16 w-16 text-stone-200 mx-auto mb-4" />
+                            <h3 className="text-xl font-bold text-stone-800">Sin órdenes recientes</h3>
+                            <p className="text-stone-500 mt-2">No se han registrado despachos para la fecha actual.</p>
                         </div>
                     ) : (
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Fecha</TableHead>
-                                    <TableHead>Vehículo</TableHead>
-                                    <TableHead>Estado</TableHead>
-                                    <TableHead className="text-right">Acciones</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {orders.map((order) => (
-                                    <TableRow key={order.id_orden_carga}>
-                                        <TableCell>{formatDate(order.fecha_carga)}</TableCell>
-                                        <TableCell className="font-medium">
-                                            Vehículo #{order.id_vehiculo}
-                                        </TableCell>
-                                        <TableCell>
-                                            <span className="text-xs px-2 py-1 rounded-full bg-orange-100 text-orange-800">
-                                                Cargado
-                                            </span>
-                                        </TableCell>
-                                        <TableCell className="text-right">
-                                            <Button variant="ghost" size="sm" className="text-teal-600">
-                                                Ver Detalle
-                                            </Button>
-                                        </TableCell>
+                        <div className="overflow-x-auto">
+                            <Table>
+                                <TableHeader>
+                                    <TableRow className="bg-stone-50/50">
+                                        <TableHead className="font-bold py-4 pl-8">Fecha y Hora</TableHead>
+                                        <TableHead className="font-bold">Vehículo</TableHead>
+                                        <TableHead className="font-bold">Estado Logístico</TableHead>
+                                        <TableHead className="font-bold text-right pr-8">Ficha</TableHead>
                                     </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
+                                </TableHeader>
+                                <TableBody>
+                                    {orders.map((order) => (
+                                        <TableRow key={order.id_orden_carga} className="group hover:bg-stone-50 transition-all border-stone-100">
+                                            <TableCell className="py-4 pl-8">
+                                                <div className="font-bold text-stone-900 leading-tight">
+                                                    {formatDate(order.fecha_carga)}
+                                                </div>
+                                                <div className="text-[10px] text-stone-400 mt-1 uppercase font-bold">ID: #{order.id_orden_carga}</div>
+                                            </TableCell>
+                                            <TableCell className="font-medium text-stone-600">
+                                                <div className="flex items-center gap-2">
+                                                    <Truck className="h-4 w-4 text-stone-400" />
+                                                    Vehículo ID: {order.id_vehiculo}
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <span className="px-3 py-1 rounded-full bg-orange-50 text-orange-600 text-[10px] font-black uppercase tracking-wider border border-orange-100">
+                                                    Listo para Ruta
+                                                </span>
+                                            </TableCell>
+                                            <TableCell className="text-right pr-8">
+                                                <Button variant="ghost" size="sm" className="text-orange-600 hover:text-orange-700 hover:bg-orange-50 rounded-lg group-hover:translate-x-1 transition-all">
+                                                    Detalles <ChevronRight className="h-4 w-4 ml-1" />
+                                                </Button>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </div>
                     )}
                 </CardContent>
             </Card>
         </div>
-    )
+    );
 }

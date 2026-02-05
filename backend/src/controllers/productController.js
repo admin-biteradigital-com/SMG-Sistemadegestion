@@ -11,7 +11,7 @@ const getAllProducts = async (req, res) => {
         let queryText = 'SELECT * FROM PRODUCTOS_SERVICIOS';
         let countQueryText = 'SELECT COUNT(*) FROM PRODUCTOS_SERVICIOS';
         const queryParams = [];
-        
+
         if (search) {
             const searchClause = ' WHERE Nombre_Producto_Servicio ILIKE $1';
             queryText += searchClause;
@@ -22,10 +22,10 @@ const getAllProducts = async (req, res) => {
         // Add sorting and pagination
         // Note: IF search exists, parameter index for limit/offset shifts
         const paramOffset = search ? 1 : 0;
-        
+
         queryText += ` ORDER BY ID_Producto_Servicio DESC LIMIT $${paramOffset + 1} OFFSET $${paramOffset + 2}`;
-        
-        const finalParams = search 
+
+        const finalParams = search
             ? [queryParams[0], limit, offset]
             : [limit, offset];
 
@@ -69,7 +69,7 @@ const getProductById = async (req, res) => {
 
 // Create Product
 const createProduct = async (req, res) => {
-    const {
+    let {
         ID_Producto_Servicio,
         Nombre_Producto_Servicio,
         Descripcion_Producto_Servicio,
@@ -86,6 +86,17 @@ const createProduct = async (req, res) => {
     } = req.body;
 
     try {
+        // Auto-generate ID if not provided (MAX + 1 pattern)
+        if (!ID_Producto_Servicio) {
+            const maxResult = await db.query('SELECT MAX(ID_Producto_Servicio) as max_id FROM PRODUCTOS_SERVICIOS');
+            ID_Producto_Servicio = (parseInt(maxResult.rows[0].max_id) || 0) + 1;
+        }
+
+        // Set defaults for mandatory unit IDs if not provided
+        ID_Unidad_Base = ID_Unidad_Base || 3;   // Default to 'Unidad'
+        ID_Unidad_Compra = ID_Unidad_Compra || 3;
+        ID_Unidad_Venta = ID_Unidad_Venta || 3;
+
         const query = `
       INSERT INTO PRODUCTOS_SERVICIOS (
         ID_Producto_Servicio, Nombre_Producto_Servicio, Descripcion_Producto_Servicio,

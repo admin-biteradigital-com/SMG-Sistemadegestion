@@ -47,15 +47,25 @@ async function checkSchema() {
         `);
         clientColumns.rows.forEach(row => console.log(`   - ${row.column_name} (${row.data_type})`));
 
-        // Verificar columnas de ordenes_venta
-        console.log('\n🛒 Columnas de ordenes_venta:');
-        const salesColumns = await pool.query(`
+        // Verificar columnas de detalles_orden_venta
+        console.log('\n📝 Columnas de detalles_orden_venta:');
+        const detailColumns = await pool.query(`
             SELECT column_name, data_type 
             FROM information_schema.columns 
-            WHERE table_name = 'ordenes_venta'
+            WHERE table_name = 'detalles_orden_venta'
             ORDER BY ordinal_position
         `);
-        salesColumns.rows.forEach(row => console.log(`   - ${row.column_name} (${row.data_type})`));
+        detailColumns.rows.forEach(row => console.log(`   - ${row.column_name} (${row.data_type})`));
+
+        // Verificar columnas de ordenes_carga
+        console.log('\n🚛 Columnas de ordenes_carga:');
+        const loadColumns = await pool.query(`
+            SELECT column_name, data_type 
+            FROM information_schema.columns 
+            WHERE table_name = 'ordenes_carga'
+            ORDER BY ordinal_position
+        `);
+        loadColumns.rows.forEach(row => console.log(`   - ${row.column_name} (${row.data_type})`));
 
         process.exit(0);
     } catch (error) {
