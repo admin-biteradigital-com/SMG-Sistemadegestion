@@ -58,7 +58,12 @@ const getSaleStats = async (req, res) => {
             db.query(pendingQuery)
         ]);
 
+        // Match frontend expected structure
         res.json({
+            todaySalesCount: parseInt(todayResult.rows[0].count),
+            todaySalesAmount: parseFloat(todayResult.rows[0].total_amount),
+            pendingSales: parseInt(pendingResult.rows[0].count),
+            // Legacy support
             today: {
                 count: parseInt(todayResult.rows[0].count),
                 amount: parseFloat(todayResult.rows[0].total_amount)
