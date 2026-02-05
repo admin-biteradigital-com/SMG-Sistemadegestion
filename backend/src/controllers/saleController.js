@@ -1,10 +1,70 @@
 const db = require('../config/db');
 
 // Get all sales
+// Get all sales (Paginated)
 const getAllSales = async (req, res) => {
     try {
-        const result = await db.query('SELECT * FROM ORDENES_VENTA');
-        res.json(result.rows);
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const offset = (page - 1) * limit;
+
+        const result = await db.query(
+            'SELECT * FROM ORDENES_VENTA ORDER BY Fecha_Venta DESC LIMIT $1 OFFSET $2',
+            [limit, offset]
+        );
+        const countResult = await db.query('SELECT COUNT(*) FROM ORDENES_VENTA');
+
+        const totalRecords = parseInt(countResult.rows[0].count);
+        const totalPages = Math.ceil(totalRecords / limit);
+
+        res.json({
+            data: result.rows,
+            meta: {
+                total: totalRecords,
+                page: page,
+                limit: limit,
+                totalPages: totalPages
+            }
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Server error' });
+    }
+};
+
+// Get Dashboard Stats
+const getSaleStats = async (req, res) => {
+    try {
+        // Stats for "Today"
+        // Note: Postgres DATE_TRUNC or simple comparison depends on timezone. 
+        // For simplicity assuming server time matches business time or using CURRENT_DATE
+
+        const todayStatsQuery = `
+            SELECT 
+                COUNT(*) as count,
+                COALESCE(SUM(Monto_Total_Venta), 0) as total_amount
+            FROM ORDENES_VENTA 
+            WHERE Fecha_Venta::date = CURRENT_DATE
+        `;
+
+        const pendingQuery = `
+            SELECT COUNT(*) as count
+            FROM ORDENES_VENTA 
+            WHERE Estado_Venta = 'pendiente' OR Estado_Venta = 'Pendiente'
+        `;
+
+        const [todayResult, pendingResult] = await Promise.all([
+            db.query(todayStatsQuery),
+            db.query(pendingQuery)
+        ]);
+
+        res.json({
+            today: {
+                count: parseInt(todayResult.rows[0].count),
+                amount: parseFloat(todayResult.rows[0].total_amount)
+            },
+            pending: parseInt(pendingResult.rows[0].count)
+        });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Server error' });
@@ -141,6 +201,7 @@ const registerPayment = async (req, res) => {
 
 module.exports = {
     getAllSales,
+    getSaleStats,
     createSale,
     registerPayment,
 };

@@ -21,27 +21,29 @@ export default function Sales() {
 
     const fetchDashboardData = async () => {
         try {
-            const [salesRes, productsRes] = await Promise.all([
-                api.get('/sales'),
-                api.get('/products')
+            const [statsRes, salesRes, productsRes] = await Promise.all([
+                api.get('/sales/stats'),
+                api.get('/sales?page=1&limit=5'),
+                api.get('/products') // Assuming products is small enough or we have a specialized low-stock endpoint (TODO: optimize strictly low stock)
             ]);
 
-            // Calculate today's stats
-            const today = new Date().toDateString();
-            const todaySales = salesRes.data.filter(s =>
-                new Date(s.fecha_orden_venta).toDateString() === today
-            );
-
             setTodayStats({
-                sales: todaySales.length,
-                amount: todaySales.reduce((sum, sale) => sum + parseFloat(sale.total_venta || 0), 0),
-                pending: todaySales.filter(s => s.estado_orden_venta === 'pendiente').length
+                sales: statsRes.data.today.count,
+                amount: statsRes.data.today.amount,
+                pending: statsRes.data.pending
             });
 
-            setRecentSales(salesRes.data.slice(0, 5));
+            // Handle paginated response for recent sales
+            const salesData = salesRes.data.data ? salesRes.data.data : salesRes.data;
+            setRecentSales(salesData);
 
             // Find low stock products
-            const lowStock = productsRes.data.filter(p =>
+            // Note: If /products is paginated by default, this might break if we rely on getAll.
+            // But previous step we kept getAll default params.
+            // Ideally we need /products/low-stock endpoint. For now assuming /products returns paginated data structure, we check 'data'.
+            const productsData = productsRes.data.data ? productsRes.data.data : productsRes.data;
+
+            const lowStock = productsData.filter(p =>
                 p.stock_actual < p.stock_seguridad_minimo
             );
             setLowStockProducts(lowStock);
@@ -182,14 +184,15 @@ export default function Sales() {
                                 <div key={idx} className="flex items-center justify-between border-b pb-3 last:border-0">
                                     <div>
                                         <p className="font-medium">Orden #{sale.id_orden_venta}</p>
+                                        {/* id_cliente might be an ID or Join? assuming raw ID for now based on previous code */}
                                         <p className="text-sm text-muted-foreground">
                                             Cliente #{sale.id_cliente}
                                         </p>
                                     </div>
                                     <div className="text-right">
-                                        <p className="font-semibold">${sale.total_venta}</p>
+                                        <p className="font-semibold">${sale.monto_total_venta}</p>
                                         <p className="text-xs text-muted-foreground">
-                                            {new Date(sale.fecha_orden_venta).toLocaleDateString()}
+                                            {new Date(sale.fecha_venta).toLocaleDateString()}
                                         </p>
                                     </div>
                                 </div>
