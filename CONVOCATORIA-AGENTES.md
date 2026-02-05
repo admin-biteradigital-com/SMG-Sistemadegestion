@@ -44,6 +44,9 @@ Este Conclave tiene como mandato supremo el desarrollo del **Sistema Integral de
 ### AGENTE-05: DOCUMENTALISTA FORENSE
 **Responsabilidad Soberana:** Garantía ALCOA+, registro de commits, trazabilidad, AAR generation.
 
+### AGENTE-06: CRONISTA COMERCIAL (Growth & Value)
+**Responsabilidad Soberana:** Traducción de valor técnico a negocio. Creación de Manuales de Usuario, Brochures de Venta, Whitepapers Técnicos y material de campana promocional. Su objetivo es asegurar que el producto sea "vendible" y "entendible" desde el día cero.
+
 ---
 
 ## 🖊️ IV. ACEPTACIÓN DE DESIGNACIÓN (PARA AGENTES)

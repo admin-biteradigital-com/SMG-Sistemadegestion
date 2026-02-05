@@ -27,5 +27,6 @@ router.use('/stock', stockRoutes);
 router.use('/load-orders', loadRoutes);
 router.use('/transport-orders', transportRoutes);
 router.use('/sales', saleRoutes);
+router.use('/sii', require('./siiRoutes'));
 
 module.exports = router;

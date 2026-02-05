@@ -1,8 +1,20 @@
 import { useState, useEffect } from 'react';
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Plus, Edit, Trash2, Loader2, Package, AlertTriangle, Search, X, ChevronLeft, ChevronRight } from "lucide-react"
+import { motion, AnimatePresence } from 'framer-motion';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+    Plus,
+    Edit,
+    Trash2,
+    Loader2,
+    Package,
+    AlertTriangle,
+    Search,
+    X,
+    ChevronLeft,
+    ChevronRight
+} from "lucide-react";
 import api from '@/api/axios';
 
 export default function Products() {
@@ -60,7 +72,7 @@ export default function Products() {
             } else {
                 await api.post('/products', formData);
             }
-            fetchProducts();
+            fetchProducts(currentPage, searchTerm);
             resetForm();
         } catch (error) {
             console.error('Error saving product:', error);
@@ -83,7 +95,7 @@ export default function Products() {
         if (!confirm('¿Estás seguro de eliminar este producto?')) return;
         try {
             await api.delete(`/products/${id}`);
-            fetchProducts();
+            fetchProducts(currentPage, searchTerm);
         } catch (error) {
             console.error('Error deleting product:', error);
             alert('Error al eliminar el producto');
@@ -108,53 +120,99 @@ export default function Products() {
 
     return (
         <div className="space-y-6">
-            {/* Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div>
-                    <h2 className="text-3xl font-bold text-stone-900">Productos</h2>
-                    <p className="text-stone-600 mt-1">
-                        Gestión completa del inventario y catálogo
-                    </p>
+            {/* Header with Search */}
+            <div className="flex flex-col gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div>
+                        <h2 className="text-3xl font-bold text-stone-900">Productos</h2>
+                        <p className="text-stone-600 mt-1">
+                            Gestión completa del inventario y catálogo
+                        </p>
+                    </div>
+                    {!showForm && (
+                        <Button
+                            onClick={() => setShowForm(true)}
+                            className="bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-white shadow-teal"
+                        >
+                            <Plus className="mr-2 h-4 w-4" />
+                            Nuevo Producto
+                        </Button>
+                    )}
                 </div>
-                {!showForm && (
-                    <Button
-                        onClick={() => setShowForm(true)}
-                        className="bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-700 hover:to-teal-600 text-white shadow-lg shadow-teal-500/30"
-                    >
-                        <Plus className="mr-2 h-4 w-4" />
-                        Nuevo Producto
-                    </Button>
-                )}
+
+                {/* Search Bar */}
+                <div className="relative">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-stone-400" />
+                    <input
+                        type="text"
+                        placeholder="Buscar productos..."
+                        value={searchTerm}
+                        onChange={(e) => {
+                            setSearchTerm(e.target.value);
+                            setCurrentPage(1);
+                        }}
+                        className="w-full pl-12 pr-12 py-3 rounded-xl glass border border-white/20 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-smooth"
+                    />
+                    {searchTerm && (
+                        <button
+                            onClick={() => setSearchTerm('')}
+                            className="absolute right-4 top-1/2 -translate-y-1/2 p-1 hover:bg-stone-100 rounded-lg transition-smooth"
+                        >
+                            <X className="h-4 w-4 text-stone-500" />
+                        </button>
+                    )}
+                </div>
             </div>
 
             {/* Stats */}
-            <div className="grid gap-4 md:grid-cols-3">
-                <Card className="border-2 border-teal-200 bg-gradient-to-br from-teal-50 to-white">
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="grid gap-4 md:grid-cols-3"
+            >
+                <Card className="glass border-white/20 hover:shadow-xl transition-smooth">
                     <CardContent className="pt-6">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-sm font-medium text-teal-700">Total Productos</p>
-                                <p className="text-3xl font-bold text-teal-900">{products.length}</p>
+                                <p className="text-sm text-stone-600">Total Productos</p>
+                                <p className="text-4xl font-bold gradient-teal-emerald bg-clip-text text-transparent">
+                                    {totalRecords}
+                                </p>
                             </div>
-                            <Package className="h-12 w-12 text-teal-500" />
+                            <div className="p-3 rounded-xl bg-gradient-to-br from-teal-500 to-emerald-500">
+                                <Package className="h-8 w-8 text-white" />
+                            </div>
                         </div>
                     </CardContent>
                 </Card>
 
                 {lowStockCount > 0 && (
-                    <Card className="border-2 border-red-200 bg-gradient-to-br from-red-50 to-white">
+                    <Card className="glass border-orange-200/50 hover:shadow-xl transition-smooth">
                         <CardContent className="pt-6">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm font-medium text-red-700">Stock Bajo</p>
-                                    <p className="text-3xl font-bold text-red-900">{lowStockCount}</p>
+                                    <p className="text-sm text-stone-600">Stock Crítico</p>
+                                    <p className="text-4xl font-bold text-orange-600">{lowStockCount}</p>
                                 </div>
-                                <AlertTriangle className="h-12 w-12 text-red-500" />
+                                <div className="p-3 rounded-xl bg-orange-100">
+                                    <AlertTriangle className="h-8 w-8 text-orange-600" />
+                                </div>
                             </div>
                         </CardContent>
                     </Card>
                 )}
-            </div>
+
+                <Card className="glass border-white/20 hover:shadow-xl transition-smooth">
+                    <CardContent className="pt-6">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-sm text-stone-600">Página Actual</p>
+                                <p className="text-4xl font-bold text-stone-900">{currentPage}/{totalPages}</p>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+            </motion.div>
 
             {/* Form */}
             {showForm && (

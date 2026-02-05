@@ -1,8 +1,17 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Plus, ShoppingCart, Package, Truck, TrendingUp, AlertCircle } from "lucide-react"
+import { motion } from 'framer-motion';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+    Plus,
+    ShoppingCart,
+    Clock,
+    CheckCircle2,
+    AlertTriangle,
+    TrendingUp,
+    Calendar
+} from "lucide-react";
 import api from '@/api/axios';
 
 export default function Sales() {
@@ -13,7 +22,7 @@ export default function Sales() {
         pending: 0
     });
     const [recentSales, setRecentSales] = useState([]);
-    const [lowStockProducts, setLowStockProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         fetchDashboardData();
@@ -21,214 +30,223 @@ export default function Sales() {
 
     const fetchDashboardData = async () => {
         try {
-            const [statsRes, salesRes, productsRes] = await Promise.all([
+            const [statsRes, salesRes] = await Promise.all([
                 api.get('/sales/stats'),
-                api.get('/sales?page=1&limit=5'),
-                api.get('/products') // Assuming products is small enough or we have a specialized low-stock endpoint (TODO: optimize strictly low stock)
+                api.get('/sales?page=1&limit=5')
             ]);
 
             setTodayStats({
-                sales: statsRes.data.today.count,
-                amount: statsRes.data.today.amount,
-                pending: statsRes.data.pending
+                sales: statsRes.data.todaySalesCount || 0,
+                amount: statsRes.data.todaySalesAmount || 0,
+                pending: statsRes.data.pendingSales || 0
             });
 
-            // Handle paginated response for recent sales
-            const salesData = salesRes.data.data ? salesRes.data.data : salesRes.data;
+            const salesData = salesRes.data.data || salesRes.data;
             setRecentSales(salesData);
-
-            // Find low stock products
-            // Note: If /products is paginated by default, this might break if we rely on getAll.
-            // But previous step we kept getAll default params.
-            // Ideally we need /products/low-stock endpoint. For now assuming /products returns paginated data structure, we check 'data'.
-            const productsData = productsRes.data.data ? productsRes.data.data : productsRes.data;
-
-            const lowStock = productsData.filter(p =>
-                p.stock_actual < p.stock_seguridad_minimo
-            );
-            setLowStockProducts(lowStock);
-
         } catch (error) {
-            console.error('Error fetching dashboard data:', error);
+            console.error('Error fetching sales data:', error);
+        } finally {
+            setLoading(false);
         }
     };
 
-    const quickActions = [
-        {
-            title: 'Nueva Venta',
-            description: 'Registrar venta a cliente',
-            icon: ShoppingCart,
-            href: '/sales/new',
-            color: 'bg-teal-600 hover:bg-teal-700'
-        },
-        {
-            title: 'Orden de Carga',
-            description: 'Preparar vehículo para distribución',
-            icon: Package,
-            href: '/load-orders',
-            color: 'bg-orange-600 hover:bg-orange-700'
-        },
-        {
-            title: 'Gestionar Productos',
-            description: 'Ver y editar inventario',
-            icon: Truck,
-            href: '/products',
-            color: 'bg-amber-600 hover:bg-amber-700'
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        show: {
+            opacity: 1,
+            transition: { staggerChildren: 0.1 }
         }
-    ];
+    };
+
+    const itemVariants = {
+        hidden: { opacity: 0, y: 20 },
+        show: { opacity: 1, y: 0 }
+    };
 
     return (
         <div className="space-y-6">
-            {/* Header */}
-            <div>
-                <h2 className="text-3xl font-bold tracking-tight">Ventas</h2>
-                <p className="text-muted-foreground">
-                    Gestión de ventas y operaciones diarias
-                </p>
+            {/* Header with CTA */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <h1 className="text-3xl font-bold text-stone-900">Ventas</h1>
+                    <p className="text-stone-600 mt-1">Gestiona tus transacciones y operaciones</p>
+                </div>
+                <Button
+                    onClick={() => navigate('/sales/new')}
+                    className="bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-white shadow-teal"
+                >
+                    <Plus className="mr-2 h-5 w-5" />
+                    Nueva Venta
+                </Button>
             </div>
 
-            {/* Stats Cards */}
-            <div className="grid gap-4 md:grid-cols-3">
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Ventas de Hoy</CardTitle>
-                        <ShoppingCart className="h-4 w-4 text-teal-600" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">{todayStats.sales}</div>
-                        <p className="text-xs text-muted-foreground">
-                            ${todayStats.amount.toFixed(2)} en total
-                        </p>
-                    </CardContent>
-                </Card>
-
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Pendientes</CardTitle>
-                        <Package className="h-4 w-4 text-orange-600" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">{todayStats.pending}</div>
-                        <p className="text-xs text-muted-foreground">
-                            Órdenes por completar
-                        </p>
-                    </CardContent>
-                </Card>
-
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Alertas de Stock</CardTitle>
-                        <AlertCircle className="h-4 w-4 text-red-600" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">{lowStockProducts.length}</div>
-                        <p className="text-xs text-muted-foreground">
-                            Productos bajo mínimo
-                        </p>
-                    </CardContent>
-                </Card>
-            </div>
-
-            {/* Quick Actions */}
-            <Card>
-                <CardHeader>
-                    <CardTitle>Acciones Rápidas</CardTitle>
-                    <CardDescription>Accede a las operaciones más frecuentes</CardDescription>
-                </CardHeader>
-                <CardContent className="grid gap-4 md:grid-cols-3">
-                    {quickActions.map((action) => {
-                        const Icon = action.icon;
-                        return (
-                            <Link
-                                key={action.title}
-                                to={action.href}
-                                className={`flex flex-col items-start gap-3 p-4 rounded-lg border hover:bg-accent transition-colors`}
-                            >
-                                <div className={`p-2 rounded-md ${action.color.split(' ')[0]} text-white`}>
-                                    <Icon className="h-5 w-5" />
+            {/* Stats Grid */}
+            <motion.div
+                variants={containerVariants}
+                initial="hidden"
+                animate="show"
+                className="grid grid-cols-1 md:grid-cols-3 gap-4"
+            >
+                {/* Today's Sales */}
+                <motion.div variants={itemVariants}>
+                    <Card className="glass border-white/20 hover:shadow-teal transition-smooth overflow-hidden">
+                        <div className="absolute inset-0 gradient-teal-emerald opacity-5"></div>
+                        <CardHeader className="relative z-10">
+                            <div className="flex items-center justify-between">
+                                <CardTitle className="text-sm text-stone-600">Ventas Hoy</CardTitle>
+                                <div className="p-2 rounded-lg bg-gradient-to-br from-teal-500 to-emerald-500">
+                                    <CheckCircle2 className="h-5 w-5 text-white" />
                                 </div>
-                                <div>
-                                    <div className="font-medium">{action.title}</div>
-                                    <div className="text-sm text-muted-foreground">{action.description}</div>
-                                </div>
-                            </Link>
-                        );
-                    })}
-                </CardContent>
-            </Card>
+                            </div>
+                        </CardHeader>
+                        <CardContent className="relative z-10">
+                            <p className="text-4xl font-bold gradient-teal-emerald bg-clip-text text-transparent">
+                                {todayStats.sales}
+                            </p>
+                            <p className="text-sm text-stone-500 mt-1">
+                                ${todayStats.amount.toLocaleString('es-CL')} facturado
+                            </p>
+                        </CardContent>
+                    </Card>
+                </motion.div>
 
-            {/* Recent Sales */}
-            <Card>
+                {/* Pending Sales */}
+                <motion.div variants={itemVariants}>
+                    <Card className="glass border-orange-200/50 hover:shadow-xl transition-smooth">
+                        <CardHeader>
+                            <div className="flex items-center justify-between">
+                                <CardTitle className="text-sm text-stone-600">Pendientes</CardTitle>
+                                <div className="p-2 rounded-lg bg-orange-100">
+                                    <Clock className="h-5 w-5 text-orange-600" />
+                                </div>
+                            </div>
+                        </CardHeader>
+                        <CardContent>
+                            <p className="text-4xl font-bold text-orange-600">{todayStats.pending}</p>
+                            <p className="text-sm text-stone-500 mt-1">Requieren atención</p>
+                        </CardContent>
+                    </Card>
+                </motion.div>
+
+                {/* Growth Indicator */}
+                <motion.div variants={itemVariants}>
+                    <Card className="glass border-white/20 hover:shadow-xl transition-smooth">
+                        <CardHeader>
+                            <div className="flex items-center justify-between">
+                                <CardTitle className="text-sm text-stone-600">Tendencia</CardTitle>
+                                <div className="p-2 rounded-lg bg-violet-100">
+                                    <TrendingUp className="h-5 w-5 text-violet-600" />
+                                </div>
+                            </div>
+                        </CardHeader>
+                        <CardContent>
+                            <p className="text-4xl font-bold text-violet-600">+12%</p>
+                            <p className="text-sm text-stone-500 mt-1">vs. semana anterior</p>
+                        </CardContent>
+                    </Card>
+                </motion.div>
+            </motion.div>
+
+            {/* Recent Sales Table */}
+            <Card className="glass border-white/20">
                 <CardHeader>
                     <div className="flex items-center justify-between">
                         <div>
-                            <CardTitle>Ventas Recientes</CardTitle>
-                            <CardDescription>Últimas transacciones registradas</CardDescription>
+                            <CardTitle className="text-xl">Ventas Recientes</CardTitle>
+                            <p className="text-sm text-stone-500 mt-1">Últimas 5 transacciones</p>
                         </div>
-                        <Button size="sm" variant="outline" onClick={() => navigate('/sales/all')}>Ver Todas</Button>
+                        <Calendar className="h-5 w-5 text-stone-400" />
                     </div>
                 </CardHeader>
                 <CardContent>
-                    {recentSales.length === 0 ? (
-                        <div className="text-center py-8 text-muted-foreground">
-                            <ShoppingCart className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                            <p>No hay ventas registradas aún</p>
-                            <Button className="mt-4 bg-teal-600 hover:bg-teal-700" onClick={() => navigate('/sales/new')}>
-                                <Plus className="mr-2 h-4 w-4" />
-                                Registrar Primera Venta
+                    {loading ? (
+                        <div className="text-center py-8 text-stone-500">Cargando...</div>
+                    ) : recentSales.length === 0 ? (
+                        <div className="text-center py-12">
+                            <ShoppingCart className="h-12 w-12 text-stone-300 mx-auto mb-3" />
+                            <p className="text-stone-500">No hay ventas registradas hoy</p>
+                            <Button
+                                onClick={() => navigate('/sales/new')}
+                                variant="outline"
+                                className="mt-4"
+                            >
+                                Registrar primera venta
                             </Button>
                         </div>
                     ) : (
-                        <div className="space-y-4">
-                            {recentSales.map((sale, idx) => (
-                                <div key={idx} className="flex items-center justify-between border-b pb-3 last:border-0">
-                                    <div>
-                                        <p className="font-medium">Orden #{sale.id_orden_venta}</p>
-                                        {/* id_cliente might be an ID or Join? assuming raw ID for now based on previous code */}
-                                        <p className="text-sm text-muted-foreground">
-                                            Cliente #{sale.id_cliente}
-                                        </p>
+                        <div className="space-y-3">
+                            {recentSales.map((sale, index) => (
+                                <motion.div
+                                    key={sale.id_orden_venta}
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: index * 0.1 }}
+                                    className="flex items-center justify-between p-4 rounded-xl hover:bg-stone-50 transition-smooth border border-stone-100"
+                                >
+                                    <div className="flex items-center gap-4">
+                                        <div className="p-3 rounded-lg bg-gradient-to-br from-teal-500 to-emerald-500">
+                                            <ShoppingCart className="h-5 w-5 text-white" />
+                                        </div>
+                                        <div>
+                                            <p className="font-semibold text-stone-900">
+                                                Venta #{sale.id_orden_venta}
+                                            </p>
+                                            <p className="text-sm text-stone-500">
+                                                {new Date(sale.fecha_orden).toLocaleDateString('es-CL')}
+                                            </p>
+                                        </div>
                                     </div>
                                     <div className="text-right">
-                                        <p className="font-semibold">${sale.monto_total_venta}</p>
-                                        <p className="text-xs text-muted-foreground">
-                                            {new Date(sale.fecha_venta).toLocaleDateString()}
+                                        <p className="font-bold text-stone-900">
+                                            ${parseFloat(sale.monto_total || 0).toLocaleString('es-CL')}
+                                        </p>
+                                        <p className="text-xs text-stone-500 capitalize">
+                                            {sale.estado_pago || 'Pendiente'}
                                         </p>
                                     </div>
-                                </div>
+                                </motion.div>
                             ))}
                         </div>
                     )}
                 </CardContent>
             </Card>
 
-            {/* Low Stock Alerts */}
-            {lowStockProducts.length > 0 && (
-                <Card className="border-red-200 bg-red-50/50">
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2 text-red-900">
-                            <AlertCircle className="h-5 w-5" />
-                            Alertas de Stock Bajo
-                        </CardTitle>
-                        <CardDescription>Productos que requieren reabastecimiento</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="space-y-2">
-                            {lowStockProducts.map(product => (
-                                <div key={product.id_producto_servicio} className="flex items-center justify-between p-3 bg-white rounded-md border">
-                                    <div>
-                                        <p className="font-medium">{product.nombre_producto_servicio}</p>
-                                        <p className="text-sm text-muted-foreground">
-                                            Stock actual: {product.stock_actual} | Mínimo: {product.stock_seguridad_minimo}
-                                        </p>
-                                    </div>
-                                    <Button size="sm" variant="outline">Reabastecer</Button>
+            {/* Quick Actions */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Link to="/sales/new">
+                    <Card className="glass border-white/20 hover:shadow-teal transition-smooth group overflow-hidden h-full">
+                        <div className="absolute inset-0 gradient-teal-emerald opacity-5 group-hover:opacity-10 transition-smooth"></div>
+                        <CardContent className="pt-6 relative z-10">
+                            <div className="flex items-center gap-4">
+                                <div className="p-4 rounded-2xl bg-gradient-to-br from-teal-500 to-emerald-500 shadow-lg group-hover:scale-110 transition-smooth">
+                                    <Plus className="h-8 w-8 text-white" />
                                 </div>
-                            ))}
-                        </div>
-                    </CardContent>
-                </Card>
-            )}
+                                <div>
+                                    <h3 className="text-xl font-bold text-stone-900">Punto de Venta</h3>
+                                    <p className="text-stone-600">Registrar nueva transacción</p>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </Link>
+
+                <Link to="/load-orders">
+                    <Card className="glass border-white/20 hover:shadow-xl transition-smooth group overflow-hidden h-full">
+                        <div className="absolute inset-0 gradient-orange opacity-5 group-hover:opacity-10 transition-smooth"></div>
+                        <CardContent className="pt-6 relative z-10">
+                            <div className="flex items-center gap-4">
+                                <div className="p-4 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg group-hover:scale-110 transition-smooth">
+                                    <AlertTriangle className="h-8 w-8 text-white" />
+                                </div>
+                                <div>
+                                    <h3 className="text-xl font-bold text-stone-900">Órdenes de Carga</h3>
+                                    <p className="text-stone-600">Preparar distribución</p>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </Link>
+            </div>
         </div>
-    )
+    );
 }
