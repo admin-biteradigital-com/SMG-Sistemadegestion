@@ -1,0 +1,9 @@
+{
+    "name": "@smg/core",
+    "version": "1.0.0",
+    "description": "Lógica principal y utilidades compartidas del ecosistema SMG",
+    "main": "src/index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    }
+}

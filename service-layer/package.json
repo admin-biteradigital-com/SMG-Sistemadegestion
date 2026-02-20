@@ -1,0 +1,9 @@
+{
+    "name": "@smg/service-layer",
+    "version": "1.0.0",
+    "description": "Lógica de negocio compartida (Inventario, Precios, Catálogo, Usuarios)",
+    "main": "src/index.js",
+    "dependencies": {
+        "@smg/database-layer": "^1.0.0"
+    }
+}

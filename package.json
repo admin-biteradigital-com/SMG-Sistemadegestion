@@ -1,0 +1,22 @@
+{
+  "name": "smg-ecosystem",
+  "version": "2.0.0",
+  "description": "Multi-tenant Ecosistema SIGLO & Abritusitio",
+  "private": true,
+  "workspaces": [
+    "core",
+    "database-layer",
+    "service-layer",
+    "siglo-workframe",
+    "abritusitio",
+    "agent-manager",
+    "tenants/*"
+  ],
+  "scripts": {
+    "start:siglo": "npm run start --workspace=siglo-workframe",
+    "start:abritusitio": "npm run start --workspace=abritusitio",
+    "dev:all": "npm run dev --workspaces"
+  },
+  "author": "BitEra Digital",
+  "license": "UNLICENSED"
+}

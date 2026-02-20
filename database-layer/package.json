@@ -1,0 +1,9 @@
+{
+    "name": "@smg/database-layer",
+    "version": "1.0.0",
+    "description": "Capa de persistencia compartida para ecosistema SMG (SIGLO y Abritusitio)",
+    "main": "src/index.js",
+    "dependencies": {
+        "pg": "^8.11.3"
+    }
+}
