@@ -24,13 +24,23 @@ app.get('/health', (req, res) => {
     res.json({ status: 'ok', service: 'SIGLO Workframe', tenant: req.tenantId });
 });
 
-// Rutas de aplicación
+// Rutas de aplicación — Fase 6: Módulos completos migrados del legacy /backend
+// --- Catálogo ---
 app.use('/api/v1/logistica/products', require('./routes/logistica/productRoutes'));
+// --- Entidades Base ---
 app.use('/api/v1/logistica/clients', require('./routes/logistica/clientRoutes'));
 app.use('/api/v1/logistica/employees', require('./routes/logistica/employeeRoutes'));
 app.use('/api/v1/logistica/suppliers', require('./routes/logistica/supplierRoutes'));
 app.use('/api/v1/logistica/units', require('./routes/logistica/unitRoutes'));
 app.use('/api/v1/logistica/vehicles', require('./routes/logistica/vehicleRoutes'));
+// --- Operaciones ---
+app.use('/api/v1/logistica/routes', require('./routes/logistica/routeRoutes'));
+app.use('/api/v1/logistica/purchase-orders', require('./routes/logistica/purchaseOrderRoutes'));
+app.use('/api/v1/logistica/receptions', require('./routes/logistica/receptionRoutes'));
+app.use('/api/v1/logistica/stock', require('./routes/logistica/stockRoutes'));
+app.use('/api/v1/logistica/load-orders', require('./routes/logistica/loadOrderRoutes'));
+app.use('/api/v1/logistica/transport-orders', require('./routes/logistica/transportRoutes'));
+app.use('/api/v1/logistica/sales', require('./routes/logistica/saleRoutes'));
 // app.use('/api/v1/auth', require('./routes/auth'));
 
 app.listen(PORT, () => {

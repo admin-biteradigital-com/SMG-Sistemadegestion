@@ -1,9 +1,11 @@
 {
     "fase_actual": "Fase 6: Consolidación y Migración Final",
-    "status": "detenido",
+    "status": "en_ejecucion",
     "progreso": [
         "Iniciado el proceso de migración de legacy endpoints de /backend",
-        "Refactorizado 'Clients', 'Employees', 'Suppliers', 'Units' y 'Vehicles' hacia el nuevo esquema Multi-Tenant (Service Layer y SIGLO Core)",
+        "Refactorizado 'Clients', 'Employees', 'Suppliers', 'Units', 'Vehicles' hacia el nuevo esquema Multi-Tenant",
+        "Refactorizado 'Routes', 'PurchaseOrders', 'Sales', 'Receptions', 'Stock', 'LoadOrders', 'TransportOrders' hacia el nuevo esquema Multi-Tenant",
+        "Todos los endpoints del /backend están ahora migrados a /service-layer y /siglo-workframe",
         "Las fases 1 a 5 se mantienen operativas y en completa estabilidad"
     ],
     "archivos_creados": [
@@ -21,14 +23,35 @@
         "siglo-workframe/src/routes/logistica/unitRoutes.js",
         "service-layer/src/logistica/vehicleService.js",
         "siglo-workframe/src/controllers/logistica/vehicleController.js",
-        "siglo-workframe/src/routes/logistica/vehicleRoutes.js"
+        "siglo-workframe/src/routes/logistica/vehicleRoutes.js",
+        "service-layer/src/logistica/routeService.js",
+        "siglo-workframe/src/controllers/logistica/routeController.js",
+        "siglo-workframe/src/routes/logistica/routeRoutes.js",
+        "service-layer/src/logistica/purchaseOrderService.js",
+        "siglo-workframe/src/controllers/logistica/purchaseOrderController.js",
+        "siglo-workframe/src/routes/logistica/purchaseOrderRoutes.js",
+        "service-layer/src/logistica/saleService.js",
+        "siglo-workframe/src/controllers/logistica/saleController.js",
+        "siglo-workframe/src/routes/logistica/saleRoutes.js",
+        "service-layer/src/logistica/receptionService.js",
+        "siglo-workframe/src/controllers/logistica/receptionController.js",
+        "siglo-workframe/src/routes/logistica/receptionRoutes.js",
+        "service-layer/src/logistica/stockService.js",
+        "siglo-workframe/src/controllers/logistica/stockController.js",
+        "siglo-workframe/src/routes/logistica/stockRoutes.js",
+        "service-layer/src/logistica/loadOrderService.js",
+        "siglo-workframe/src/controllers/logistica/loadOrderController.js",
+        "siglo-workframe/src/routes/logistica/loadOrderRoutes.js",
+        "service-layer/src/logistica/transportService.js",
+        "siglo-workframe/src/controllers/logistica/transportController.js",
+        "siglo-workframe/src/routes/logistica/transportRoutes.js"
     ],
-    "proxima_accion": "Migrar los endpoints restantes (Routes, PurchaseOrders, Sales, etc.) y seguir achicando el monolito.",
+    "proxima_accion": "El monolito /backend está 100% migrado. Próximo paso: eliminar /backend y avanzar a Auth JWT multi-tenant.",
     "fase_1": "completada",
     "fase_2": "completada",
     "fase_3": "completada",
     "fase_4": "completada",
     "fase_5": "completada",
-    "fase_6": "en ejecucion",
-    "last_checkpoint": "2026-02-20T00:13:12-03:00"
+    "fase_6": "pendiente_review",
+    "last_checkpoint": "2026-02-20T20:25:00-03:00"
 }

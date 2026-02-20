@@ -31,7 +31,7 @@
 *   [x] Publicación de documentación de arquitectura final para venta e implementación del Workframe.
 
 ## Fase 6: Consolidación y Migración Final (NUEVA FASE)
-*   [ ] Refactorizar endpoints de legacy (`/backend/src/routes/*`) hacia `/service-layer` y `/siglo-workframe` (Ej. Clients, Sales, Employees).
+*   [x] Refactorizar endpoints de legacy (`/backend/src/routes/*`) hacia `/service-layer` y `/siglo-workframe` — **13 módulos migrados: Products, Clients, Employees, Suppliers, Units, Vehicles, Routes, PurchaseOrders, Receptions, Stock, LoadOrders, TransportOrders, Sales**.
 *   [ ] Implementar sistema robusto Auth JWT multi-tenant para `req.tenantId` inyección.
 *   [ ] Remover monolito `/backend` por completo una vez vaciado.
 *   [ ] Iniciar portal frontend Abritusitio con React/Next.js.

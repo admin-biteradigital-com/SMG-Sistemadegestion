@@ -29,8 +29,17 @@ const queryMultiTenant = async (text, params, tenantId) => {
     return pool.query(text, params);
 };
 
+/**
+ * Retorna el pool de conexiones para el tenant dado.
+ * Hoy usa el pool singleton; en el futuro puede derivar a pools separados por tenant.
+ * @param {string} tenantId
+ * @returns {Pool}
+ */
+const getPool = (tenantId) => pool;
+
 module.exports = {
     query: (text, params) => pool.query(text, params),
     queryMultiTenant,
+    getPool,
     pool,
 };
