@@ -29,3 +29,9 @@
 *   [x] Orquestar despliegue de piezas (Infra como código / Docker base). (Docker y Docker Compose).
 *   [x] Testing de cross-comunicación API entre SIGLO Interno <-> DB <-> Abritusitio. (Integración simulada en middlewares).
 *   [x] Publicación de documentación de arquitectura final para venta e implementación del Workframe.
+
+## Fase 6: Consolidación y Migración Final (NUEVA FASE)
+*   [ ] Refactorizar endpoints de legacy (`/backend/src/routes/*`) hacia `/service-layer` y `/siglo-workframe` (Ej. Clients, Sales, Employees).
+*   [ ] Implementar sistema robusto Auth JWT multi-tenant para `req.tenantId` inyección.
+*   [ ] Remover monolito `/backend` por completo una vez vaciado.
+*   [ ] Iniciar portal frontend Abritusitio con React/Next.js.

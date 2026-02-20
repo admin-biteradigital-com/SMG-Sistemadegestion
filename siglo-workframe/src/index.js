@@ -26,6 +26,11 @@ app.get('/health', (req, res) => {
 
 // Rutas de aplicación
 app.use('/api/v1/logistica/products', require('./routes/logistica/productRoutes'));
+app.use('/api/v1/logistica/clients', require('./routes/logistica/clientRoutes'));
+app.use('/api/v1/logistica/employees', require('./routes/logistica/employeeRoutes'));
+app.use('/api/v1/logistica/suppliers', require('./routes/logistica/supplierRoutes'));
+app.use('/api/v1/logistica/units', require('./routes/logistica/unitRoutes'));
+app.use('/api/v1/logistica/vehicles', require('./routes/logistica/vehicleRoutes'));
 // app.use('/api/v1/auth', require('./routes/auth'));
 
 app.listen(PORT, () => {
