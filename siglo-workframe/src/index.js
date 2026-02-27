@@ -11,13 +11,11 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
 
-// Tenant Identification Middleware (Base definition)
-app.use((req, res, next) => {
-    // Aquí se extraerá el tenant de un token JWT o hostname.
-    // Ej: const tenantId = req.headers['x-tenant-id'];
-    req.tenantId = 'smg'; // Default pilot tenant
-    next();
-});
+// Middleware de Autenticación JWT Multi-Tenant
+const authMiddleware = require('./middlewares/authMiddleware');
+
+// Aplicamos el middleware a todas las rutas de logística
+app.use('/api/v1/logistica', authMiddleware);
 
 // Health check
 app.get('/health', (req, res) => {
@@ -41,7 +39,7 @@ app.use('/api/v1/logistica/stock', require('./routes/logistica/stockRoutes'));
 app.use('/api/v1/logistica/load-orders', require('./routes/logistica/loadOrderRoutes'));
 app.use('/api/v1/logistica/transport-orders', require('./routes/logistica/transportRoutes'));
 app.use('/api/v1/logistica/sales', require('./routes/logistica/saleRoutes'));
-// app.use('/api/v1/auth', require('./routes/auth'));
+app.use('/api/v1/auth', require('./routes/authRoutes'));
 
 app.listen(PORT, () => {
     console.log(`🚀 SIGLO Workframe backend running on port ${PORT}`);

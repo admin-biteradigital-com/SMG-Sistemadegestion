@@ -21,12 +21,18 @@ pool.on('error', (err) => {
  * @param {string} tenantId - Identificador del tenant para aislar data (opcional, pero sugerido usar a nivel middleware)
  */
 const queryMultiTenant = async (text, params, tenantId) => {
-    // Si bien este wrapper es básico, marca el estándar para inyectar filtros o
-    // variables temporales si se usar Row Level Security (RLS) en Postgres
-    // Ej: await pool.query(`SET app.current_tenant = '${tenantId}'`);
-
-    // Por ahora, el comportamiento delega en la construcción de la query.
-    return pool.query(text, params);
+    // Si tenantId está presente, abrir un cliente usando getClient() para aislar.
+    // De lo contrario, ejecutar como admin/sin contexto (solo para scripts o queries base).
+    if (tenantId) {
+        const client = await getClient(tenantId);
+        try {
+            return await client.query(text, params);
+        } finally {
+            client.release();
+        }
+    } else {
+        return pool.query(text, params);
+    }
 };
 
 /**
@@ -37,9 +43,25 @@ const queryMultiTenant = async (text, params, tenantId) => {
  */
 const getPool = (tenantId) => pool;
 
+/**
+ * Adquiere un cliente transaccional exclusivo del pool 
+ * y le inyecta el contexto del tenant vía `set_config`.
+ * Es indispensable para transacciones (BEGIN/COMMIT).
+ * @param {string} tenantId
+ * @returns {Client} Instancia del cliente pg. ¡DEBE LLAMARSE client.release() AL TERMINAR!
+ */
+const getClient = async (tenantId) => {
+    const client = await pool.connect();
+    if (tenantId) {
+        await client.query("SELECT set_config('app.current_tenant', $1, true)", [tenantId]);
+    }
+    return client;
+};
+
 module.exports = {
     query: (text, params) => pool.query(text, params),
     queryMultiTenant,
     getPool,
+    getClient,
     pool,
 };

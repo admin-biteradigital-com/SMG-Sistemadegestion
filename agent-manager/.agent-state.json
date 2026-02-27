@@ -46,12 +46,12 @@
         "siglo-workframe/src/controllers/logistica/transportController.js",
         "siglo-workframe/src/routes/logistica/transportRoutes.js"
     ],
-    "proxima_accion": "El monolito /backend está 100% migrado. Próximo paso: eliminar /backend y avanzar a Auth JWT multi-tenant.",
+    "proxima_accion": "Iniciar el Frontend de SIGLO o Abritusitio.",
     "fase_1": "completada",
     "fase_2": "completada",
     "fase_3": "completada",
     "fase_4": "completada",
     "fase_5": "completada",
-    "fase_6": "pendiente_review",
-    "last_checkpoint": "2026-02-20T20:25:00-03:00"
+    "fase_6": "en_progreso",
+    "last_checkpoint": "2026-02-27T20:06:00-03:00"
 }

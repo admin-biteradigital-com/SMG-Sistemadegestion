@@ -1,4 +1,4 @@
-const { queryMultiTenant, getPool } = require('@smg/database-layer/src/db');
+const { queryMultiTenant, getClient } = require('@smg/database-layer/src/db');
 
 class SaleService {
     static async getAllSales(tenantId) {
@@ -13,8 +13,7 @@ class SaleService {
             Fecha_Vencimiento_Credito, Items
         } = data;
 
-        const pool = getPool(tenantId);
-        const client = await pool.connect();
+        const client = await getClient(tenantId);
 
         try {
             await client.query('BEGIN');
@@ -57,8 +56,7 @@ class SaleService {
             Fecha_Deposito_Efectivo, Numero_Documento_Pago, Notas_Pago
         } = data;
 
-        const pool = getPool(tenantId);
-        const client = await pool.connect();
+        const client = await getClient(tenantId);
 
         try {
             await client.query('BEGIN');
