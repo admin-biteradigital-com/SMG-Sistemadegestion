@@ -62,7 +62,7 @@ CREATE TABLE ORDENES_COMPRA (
     Fecha_Creacion DATE NOT NULL,
     Fecha_Entrega_Estimada DATE,
     Estado_Orden VARCHAR(50) NOT NULL DEFAULT 'Pendiente',
-    Fecha_Confirmacion_Proveedor DATETIME,
+    Fecha_Confirmacion_Proveedor TIMESTAMP,
     Notas_Proveedor_Confirmacion TEXT,
     Total_Orden DECIMAL(10, 2) NOT NULL,
     Notas TEXT,
@@ -86,7 +86,7 @@ CREATE TABLE DETALLES_ORDEN (
 CREATE TABLE RECEPCIONES_MERCADERIA (
     ID_Recepcion INT PRIMARY KEY,
     ID_Orden INT NOT NULL,
-    Fecha_Recepcion DATETIME NOT NULL,
+    Fecha_Recepcion TIMESTAMP NOT NULL,
     Nro_Guia_Remision VARCHAR(100),
     Observaciones TEXT,
     FOREIGN KEY (ID_Orden) REFERENCES ORDENES_COMPRA(ID_Orden)
@@ -112,7 +112,7 @@ CREATE TABLE STOCK_DEPOSITO (
     Numero_Lote VARCHAR(100) NOT NULL,
     Fecha_Vencimiento DATE NOT NULL,
     Cantidad_Actual_Lote INT NOT NULL, -- Cantidad en ID_Unidad_Base del producto
-    Ultima_Actualizacion_Lote DATETIME NOT NULL,
+    Ultima_Actualizacion_Lote TIMESTAMP NOT NULL,
     UNIQUE (ID_Producto_Servicio, Numero_Lote, Fecha_Vencimiento),
     FOREIGN KEY (ID_Producto_Servicio) REFERENCES PRODUCTOS_SERVICIOS(ID_Producto_Servicio)
 );
@@ -145,7 +145,7 @@ CREATE TABLE VEHICULOS (
 -- Tabla: ORDENES_CARGA
 CREATE TABLE ORDENES_CARGA (
     ID_Orden_Carga INT PRIMARY KEY,
-    Fecha_Carga DATETIME NOT NULL,
+    Fecha_Carga TIMESTAMP NOT NULL,
     ID_Vehiculo INT NOT NULL,
     ID_Chofer INT NOT NULL,
     Estado_Carga VARCHAR(50) NOT NULL DEFAULT 'Pendiente',
@@ -208,7 +208,7 @@ CREATE TABLE SUCURSALES_CLIENTE (
 CREATE TABLE PEDIDOS_CLIENTE (
     ID_Pedido INT PRIMARY KEY,
     ID_Sucursal INT NOT NULL, -- FK a la tabla SUCURSALES_CLIENTE
-    Fecha_Pedido DATETIME NOT NULL,
+    Fecha_Pedido TIMESTAMP NOT NULL,
     Fecha_Entrega_Acordada DATE,
     Canal_Contacto VARCHAR(50) NOT NULL,
     Estado_Pedido VARCHAR(50) NOT NULL DEFAULT 'Pendiente',
@@ -247,8 +247,8 @@ CREATE TABLE ORDENES_TRANSPORTE (
     ID_Orden_Transporte INT PRIMARY KEY,
     ID_Orden_Carga INT UNIQUE NOT NULL,
     ID_Ruta INT NOT NULL,
-    Fecha_Salida DATETIME NOT NULL,
-    Fecha_Llegada_Estimada DATETIME,
+    Fecha_Salida TIMESTAMP NOT NULL,
+    Fecha_Llegada_Estimada TIMESTAMP,
     Estado_Transporte VARCHAR(50) NOT NULL DEFAULT 'Programada',
     Observaciones TEXT,
     FOREIGN KEY (ID_Orden_Carga) REFERENCES ORDENES_CARGA(ID_Orden_Carga),
@@ -284,7 +284,7 @@ CREATE TABLE DETALLES_DESTINO_TRANSPORTE (
 CREATE TABLE ORDENES_VENTA (
     ID_Orden_Venta INT PRIMARY KEY,
     ID_Destino_Transporte INT NOT NULL,
-    Fecha_Venta DATETIME NOT NULL,
+    Fecha_Venta TIMESTAMP NOT NULL,
     Tipo_Documento_Venta VARCHAR(50) NOT NULL,
     Monto_Total_Venta DECIMAL(10, 2) NOT NULL,
     Estado_Venta VARCHAR(50) NOT NULL DEFAULT 'Completada',
@@ -315,14 +315,14 @@ CREATE TABLE FACTURAS (
     ID_Factura INT PRIMARY KEY,
     ID_Orden_Venta INT UNIQUE NOT NULL,
     Numero_Factura VARCHAR(100) UNIQUE NOT NULL,
-    Fecha_Emision DATETIME NOT NULL,
+    Fecha_Emision TIMESTAMP NOT NULL,
     Monto_Neto DECIMAL(10, 2) NOT NULL,
     Monto_IVA DECIMAL(10, 2) NOT NULL,
     Monto_Total_Factura DECIMAL(10, 2) NOT NULL,
     Estado_Factura VARCHAR(50) NOT NULL DEFAULT 'Emitida',
     Estado_SII VARCHAR(50),
     Folio_SII VARCHAR(50),
-    Fecha_Envio_SII DATETIME,
+    Fecha_Envio_SII TIMESTAMP,
     FOREIGN KEY (ID_Orden_Venta) REFERENCES ORDENES_VENTA(ID_Orden_Venta)
 );
 
@@ -330,7 +330,7 @@ CREATE TABLE FACTURAS (
 CREATE TABLE PAGOS_RECIBIDOS (
     ID_Pago INT PRIMARY KEY,
     ID_Orden_Venta INT NOT NULL,
-    Fecha_Pago DATETIME NOT NULL,
+    Fecha_Pago TIMESTAMP NOT NULL,
     Monto_Pago DECIMAL(10, 2) NOT NULL,
     Metodo_Pago_Recibido VARCHAR(50) NOT NULL,
     Fecha_Deposito_Efectivo DATE,
@@ -344,7 +344,7 @@ CREATE TABLE INTERACCIONES_CLIENTE (
     ID_Interaccion INT PRIMARY KEY,
     ID_Cliente INT NOT NULL,
     ID_Sucursal INT,
-    Fecha_Interaccion DATETIME NOT NULL,
+    Fecha_Interaccion TIMESTAMP NOT NULL,
     Tipo_Interaccion VARCHAR(50) NOT NULL,
     Notas_Interaccion TEXT,
     ID_Empleado INT NOT NULL,
@@ -360,7 +360,7 @@ CREATE TABLE USUARIOS_CLIENTES (
     ID_Sucursal INT,
     Email_Usuario VARCHAR(255) UNIQUE NOT NULL,
     Password_Hash VARCHAR(255) NOT NULL,
-    Fecha_Registro DATETIME NOT NULL,
+    Fecha_Registro TIMESTAMP NOT NULL,
     Estado_Cuenta VARCHAR(50) NOT NULL DEFAULT 'Activa',
     FOREIGN KEY (ID_Cliente) REFERENCES CLIENTES(ID_Cliente),
     FOREIGN KEY (ID_Sucursal) REFERENCES SUCURSALES_CLIENTE(ID_Sucursal)
@@ -411,7 +411,7 @@ CREATE TABLE CLIENTE_PREFERENCIAS (
 -- Tabla: RUTAS_SUGERIDAS
 CREATE TABLE RUTAS_SUGERIDAS (
     ID_Ruta_Sugerida INT PRIMARY KEY,
-    Fecha_Sugerencia DATETIME NOT NULL,
+    Fecha_Sugerencia TIMESTAMP NOT NULL,
     ID_Orden_Carga INT UNIQUE NOT NULL,
     ID_Vehiculo INT,
     ID_Chofer INT NOT NULL,
@@ -429,8 +429,8 @@ CREATE TABLE DETALLES_RUTA_SUGERIDA (
     ID_Ruta_Sugerida INT NOT NULL,
     ID_Sucursal INT NOT NULL,
     Orden_Visita_Sugerida INT NOT NULL,
-    Hora_Llegada_Estimada DATETIME,
-    Hora_Salida_Estimada DATETIME,
+    Hora_Llegada_Estimada TIMESTAMP,
+    Hora_Salida_Estimada TIMESTAMP,
     FOREIGN KEY (ID_Ruta_Sugerida) REFERENCES RUTAS_SUGERIDAS(ID_Ruta_Sugerida),
     FOREIGN KEY (ID_Sucursal) REFERENCES SUCURSALES_CLIENTE(ID_Sucursal)
 );

@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:20-alpine
 
 WORKDIR /app
 
@@ -11,6 +11,7 @@ COPY database-layer/package.json ./database-layer/
 COPY service-layer/package.json ./service-layer/
 COPY siglo-workframe/package.json ./siglo-workframe/
 COPY abritusitio/package.json ./abritusitio/
+COPY siglo-frontend/package.json ./siglo-frontend/
 
 # Instalar dependencias
 RUN npm install

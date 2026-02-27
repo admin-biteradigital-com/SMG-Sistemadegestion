@@ -9,17 +9,17 @@ DECLARE
     -- Lista de todas las tablas que deben ser aisladas por tenant
     t_name text;
     tables_list text[] := ARRAY[
-        'UNIDADES_MEDIDA', 'PRODUCTO_UNIDADES_CONVERSION', 'PROVEEDORES',
-        'PRODUCTOS_SERVICIOS', 'ORDENES_COMPRA', 'DETALLES_ORDEN',
-        'RECEPCIONES_MERCADERIA', 'DETALLES_RECEPCION', 'STOCK_DEPOSITO',
-        'EMPLEADOS', 'VEHICULOS', 'ORDENES_CARGA', 'DETALLES_ORDEN_CARGA',
-        'RUTAS', 'CLIENTES', 'SUCURSALES_CLIENTE', 'PEDIDOS_CLIENTE',
-        'DETALLES_PEDIDO_CLIENTE', 'PEDIDOS_CARGADOS', 'ORDENES_TRANSPORTE',
-        'DESTINOS_TRANSPORTE', 'DETALLES_DESTINO_TRANSPORTE', 'ORDENES_VENTA',
-        'DETALLES_ORDEN_VENTA', 'FACTURAS', 'PAGOS_RECIBIDOS',
-        'INTERACCIONES_CLIENTE', 'USUARIOS_CLIENTES', 'RENDIMIENTO_EMPLEADO',
-        'METAS_EMPLEADO', 'CLIENTE_PREFERENCIAS', 'RUTAS_SUGERIDAS',
-        'DETALLES_RUTA_SUGERIDA'
+        'unidades_medida', 'producto_unidades_conversion', 'proveedores',
+        'productos_servicios', 'ordenes_compra', 'detalles_orden',
+        'recepciones_mercaderia', 'detalles_recepcion', 'stock_deposito',
+        'empleados', 'vehiculos', 'ordenes_carga', 'detalles_orden_carga',
+        'rutas', 'clientes', 'sucursales_cliente', 'pedidos_cliente',
+        'detalles_pedido_cliente', 'pedidos_cargados', 'ordenes_transporte',
+        'destinos_transporte', 'detalles_destino_transporte', 'ordenes_venta',
+        'detalles_orden_venta', 'facturas', 'pagos_recibidos',
+        'interacciones_cliente', 'usuarios_clientes', 'rendimiento_empleado',
+        'metas_empleado', 'cliente_preferencias', 'rutas_sugeridas',
+        'detalles_ruta_sugerida'
     ];
 BEGIN
     FOREACH t_name IN ARRAY tables_list
