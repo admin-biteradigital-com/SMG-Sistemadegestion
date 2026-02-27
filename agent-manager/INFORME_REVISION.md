@@ -40,13 +40,8 @@ Todo este enjambre está orquestado mediante **Docker Compose**, lo que signific
 | `/sales` | GET, POST, POST/payment |
 
 ## 4. Riesgos y Pendientes
-1. **Eliminar `/backend`**: Toda la lógica está migrada. Confirmar y ejecutar eliminación del directorio legacy.
-2. **Seguridad JWT**: El middleware de tenant sigue siendo mock (`req.tenantId = 'smg'`). Requiere Auth JWT real con `req.tenantId` dinámico.
-3. **Frontend**: Falta la interfaz gráfica de SIGLO y el portal Abritusitio (React/Next.js).
-4. **RLS Postgres**: Activar Row Level Security en la DB para reforzar aislamiento multi-tenant a nivel de DB.
+1. **Frontend**: Falta la interfaz gráfica de SIGLO y el portal Abritusitio (React/Next.js) para materializar la capa visual de todo el ecosistema.
 
 ## 5. Próxima Acción Recomendada
-Con el monolito 100% vaciado, las opciones ordenadas por impacto son:
-1. **Eliminar `/backend`** — Tarea de limpieza arquitectural definitiva.
-2. **Implementar Auth JWT Multi-Tenant** — El punto crítico de seguridad.
-3. **Iniciar frontend SIGLO o Abritusitio** — Primera interfaz visual del ecosistema.
+Con la arquitectura base 100% operativa (backend, persistencia multitenant aislada, workspaces, auth jwt), la prioridad natural es:
+1. **Iniciar frontend SIGLO o Abritusitio** — Construir la primera interfaz visual SPA consumiendo los endpoints de `@smg/siglo-workframe`.
