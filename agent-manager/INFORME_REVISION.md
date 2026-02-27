@@ -40,8 +40,11 @@ Todo este enjambre está orquestado mediante **Docker Compose**, lo que signific
 | `/sales` | GET, POST, POST/payment |
 
 ## 4. Riesgos y Pendientes
-1. **Frontend**: Falta la interfaz gráfica de SIGLO y el portal Abritusitio (React/Next.js) para materializar la capa visual de todo el ecosistema.
+1. **Frontend Completo**: Se ha inicializado `siglo-frontend` con la vista de Login y el Catálogo de Productos para validar RLS+JWT, pero faltan el resto de las vistas (Clientes, Vehículos, Rutas, etc.) y `abritusitio-frontend` (Catálogo comercial web).
+2. **Conexión a Base de Datos de Producción**: Actualmente se está validando el ecosistema mediante Docker, se requiere de la DB oficial configurada con las políticas RLS ejecutando el script `01_enable_rls.sql`.
 
 ## 5. Próxima Acción Recomendada
-Con la arquitectura base 100% operativa (backend, persistencia multitenant aislada, workspaces, auth jwt), la prioridad natural es:
-1. **Iniciar frontend SIGLO o Abritusitio** — Construir la primera interfaz visual SPA consumiendo los endpoints de `@smg/siglo-workframe`.
+El back-end está completamente migrado y asegurado con RLS. El front-end base ha sido instanciado.
+
+1. **Expansión del Frontend SIGLO** — Finalizar las vistas para ABM (Alta, Baja y Modificación) de `Clientes`, `Empleados` y `Órdenes`.
+2. **Inicializar Abritusitio Frontend** — Construir la tienda virtual B2C que consumirá `@smg/abritusitio`.

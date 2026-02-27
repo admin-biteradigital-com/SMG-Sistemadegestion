@@ -10,6 +10,7 @@
     "siglo-workframe",
     "abritusitio",
     "agent-manager",
+    "siglo-frontend",
     "tenants/*"
   ],
   "scripts": {

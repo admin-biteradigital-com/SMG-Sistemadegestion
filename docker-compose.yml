@@ -30,27 +30,24 @@ services:
       - DB_USER=${DB_USER:-postgres}
       - DB_PASSWORD=${DB_PASSWORD:-password}
       - DB_NAME=${DB_NAME:-smg_db}
+      - JWT_SECRET=smg_super_secret_dev_key
     command: npm run start:siglo
     depends_on:
       db:
         condition: service_healthy
 
-  abritusitio:
+  siglo-frontend:
     build: 
       context: .
       dockerfile: Dockerfile
     ports:
-      - "4001:4001"
+      - "3000:3000"
     environment:
-      - PORT=4001
-      - DB_HOST=db
-      - DB_USER=${DB_USER:-postgres}
-      - DB_PASSWORD=${DB_PASSWORD:-password}
-      - DB_NAME=${DB_NAME:-smg_db}
-    command: npm run start:abritusitio
+      - PORT=3000
+      - NEXT_PUBLIC_API_URL=http://localhost:3001/api/v1
+    command: npm run dev --workspace=siglo-frontend
     depends_on:
-      db:
-        condition: service_healthy
+      - siglo-workframe
 
 volumes:
   postgres_data:
